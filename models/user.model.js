@@ -23,11 +23,8 @@ module.exports = (sequelize, Sequelize) => {
     confirmationCode: { 
       type: Sequelize.STRING,
       unique: true },
-      telephone: {
+    telephone: {
         type: Sequelize.STRING,
-      },
-      roleId: {
-        type: Sequelize.INTEGER
     },
   });
 
