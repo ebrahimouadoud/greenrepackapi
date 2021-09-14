@@ -1,5 +1,6 @@
 const authService = require("../authmiddelwares/AuthService");
 const controller = require("../Controller/user.controller");
+const usermanagerController = require("../Controller/user-manager.controller")
 
 module.exports = function(app) {
   app.use(function(req, res, next) {
@@ -26,7 +27,7 @@ module.exports = function(app) {
 
   app.get(
     "/api/user/all",
-    [authService.verifyToken, authService.isManager],
-    controller.managerBoard
+    [authService.verifyToken, authService.isAdmin || authService.isManager ],
+    usermanagerController.getAllUsers
   );
 };
