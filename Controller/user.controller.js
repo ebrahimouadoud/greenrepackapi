@@ -10,6 +10,6 @@ exports.allAccess = (req, res) => {
     res.status(200).send("Admin Content.");
   };
   
-  exports.agentBoard = (req, res) => {
-    res.status(200).send("agent Content.");
+  exports.managerBoard = (req, res) => {
+    res.status(200).send("manager Content.");
   };

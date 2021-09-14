@@ -16,13 +16,19 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING
     },
     status: {
-      type: Sequelize.STRING,
-      enum: ['Pending', 'Active'],
-      default: 'Pending'
+      type: Sequelize.ENUM,
+      values: ['Pending', 'Active'],
+      defaultValue: 'Pending'
     },
     confirmationCode: { 
       type: Sequelize.STRING,
       unique: true },
+      telephone: {
+        type: Sequelize.STRING,
+      },
+      roleId: {
+        type: Sequelize.INTEGER
+    },
   });
 
   return User;

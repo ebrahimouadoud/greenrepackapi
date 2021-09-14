@@ -4,8 +4,8 @@ const express = require('express')
 const bodyParser = require("body-parser");
 //const cors = require("cors");
 // const util = require('util');
-const db = require("./models");
-const DBseeder = require('./database/seeder')
+// const db = require("./models");
+// const DBseeder = require('./database/seeder')
 
 const app = express()
 
@@ -13,10 +13,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-db.sequelize.sync({force: true}).then(() => {
-    //console.log('DATABASE SYNC');
-    DBseeder.seedRoles()
-});
+// db.sequelize.sync({force: false}).then(() => {
+//     console.log('DATABASE SYNC');
+//     DBseeder.seedRoles()
+// });
 
 app.listen(3000, () => { 
     //logger.info( 'Server listening' )

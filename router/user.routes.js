@@ -20,13 +20,13 @@ module.exports = function(app) {
 
   app.get(
     "/api/test/mod",
-    [authService.verifyToken, authService.isAgent],
-    controller.agentBoard
+    [authService.verifyToken, authService.isManager],
+    controller.managerBoard
   );
 
   app.get(
-    "/api/test/admin",
-    [authService.verifyToken, authService.isAdmin],
-    controller.adminBoard
+    "/api/user/all",
+    [authService.verifyToken, authService.isManager],
+    controller.managerBoard
   );
 };

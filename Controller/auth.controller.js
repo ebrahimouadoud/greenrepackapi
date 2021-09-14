@@ -20,6 +20,7 @@ exports.signup = (req, res) => {
     email: req.body.email,
     password: bcrypt.hashSync(req.body.password, 8),
     confirmationCode: token,
+    telephone: req.body.telephone,
   })
     .then(user => {
       user.setRoles([1]).then(() => {
@@ -79,7 +80,9 @@ exports.signin = (req, res) => {
           username: user.username,
           email: user.email,
           roles: authorities,
-          accessToken: token
+          accessToken: token,
+          telephone: user.telephone,
+          password: user.password,
         });
       });
     })
@@ -89,22 +92,48 @@ exports.signin = (req, res) => {
 };
 
 
+// User ValidationCode
 exports.userValidator = (req, res, next) => {
-  User.findOne({
-    confirmationCode: req.params.confirmationCode,
+  User.findOne({ 
+    where: {
+      confirmationCode: req.params.confirmationCode
+    }
   })
     .then((user) => {
-      console.log(user);
+      // console.log(user);
       if (!user) {
         return res.status(404).send({ message: "User Not found." });
       }
-      user.status = "Active";
-      user.save((err) => {
-        if (err) {
-          res.status(500).send({ message: err });
-          return;
-        }
-      });
+      if (user.status == 'Pending'){
+        user.status = 'Active';
+        user.save();
+        return res.status(200).send({
+          message: "User Was validate Successfully"
+        });
+      } 
+      else if (user.status == 'Active'){
+        return res.status(500).send({ 
+          message: "User Has Already been Validated" 
+        });
+      }
     })
-    .catch((e) => console.log("error", e));
+    .catch(err => {
+      return res.status(400).send({ message: err.message });
+    });
 };
+
+
+// Logout
+
+exports.logout = async function (req, res) {
+  const authHeader = req.headers["authorization"];
+  jwt.sign(authHeader, "", { expiresIn: 1 }, (logout, err) => {
+    if (logout) {
+      res.status(200).send({ message: 'You have been Logged Out' });
+    } else {
+      res.send({ msg: 'Error' });
+    }
+  });
+
+};
+

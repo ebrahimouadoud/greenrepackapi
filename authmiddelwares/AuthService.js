@@ -41,11 +41,11 @@ isAdmin = (req, res, next) => {
   });
 };
 
-isAgent = (req, res, next) => {
+isManager = (req, res, next) => {
   User.findByPk(req.userId).then(user => {
     user.getRoles().then(roles => {
       for (let i = 0; i < roles.length; i++) {
-        if (roles[i].name === "Agent") {
+        if (roles[i].name === "manager") {
           next();
           return;
         }
@@ -58,23 +58,40 @@ isAgent = (req, res, next) => {
   });
 };
 
-isAgentOrAdmin = (req, res, next) => {
+// isManagerOrAdmin = (req, res, next) => {
+//   User.findByPk(req.userId).then(user => {
+//     user.getRoles().then(roles => {
+//       for (let i = 0; i < roles.length; i++) {
+//         if (roles[i].name === "Manager") {
+//           next();
+//           return;
+//         }
+
+//         if (roles[i].name === "admin") {
+//           next();
+//           return;
+//         }
+//       }
+
+//       res.status(403).send({
+//         message: "Require Agent or Admin Role!"
+//       });
+//     });
+//   });
+// };
+
+isAssociation = (req, res, next) => {
   User.findByPk(req.userId).then(user => {
     user.getRoles().then(roles => {
       for (let i = 0; i < roles.length; i++) {
-        if (roles[i].name === "Agent") {
-          next();
-          return;
-        }
-
-        if (roles[i].name === "admin") {
+        if (roles[i].name === "association") {
           next();
           return;
         }
       }
 
       res.status(403).send({
-        message: "Require Agent or Admin Role!"
+        message: "Require Agent Role!"
       });
     });
   });
@@ -83,7 +100,7 @@ isAgentOrAdmin = (req, res, next) => {
 const authJwt = {
   verifyToken: verifyToken,
   isAdmin: isAdmin,
-  isAgent: isAgent,
-  isAgentOrAdmin: isAgentOrAdmin
+  isManager: isManager,
+  isAssociation: isAssociation,
 };
 module.exports = authJwt;
