@@ -32,6 +32,7 @@ module.exports ={
           firstname: "Ebrahim",
           lastname: "OUADOUD",
           email: "ebr.ouadoud@gmail.com",
+          status: "Active",
           password: bcrypt.hashSync("0000", 8)
         }).then(user => {
           user.setRoles([2])

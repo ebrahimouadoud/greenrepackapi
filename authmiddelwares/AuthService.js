@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
 const config = require("../conf/auth.conf");
+const expressJWT = require("express-jwt")
+require('dotenv').config();
 const db = require("../models");
 const User = db.user;
 
@@ -22,6 +24,24 @@ verifyToken = (req, res, next) => {
     next();
   });
 };
+
+// exports.requireSignIn = expressJWT({
+//   secret: process.env.JWT_SECRET,
+//   algorithms: ['HS256'],
+//   userProperty: 'auth'
+// })
+
+// exports.isAuth = (req, res, next) => {
+//   let user = req.profile && req.auth && (req.profile._id == req.auth._id)
+  
+//   if(!user){
+//       res.status(403).json({
+//           error: "Access Denied"
+//       })
+//   }
+
+//   next()
+// }
 
 isAdmin = (req, res, next) => {
   User.findByPk(req.userId).then(user => {
