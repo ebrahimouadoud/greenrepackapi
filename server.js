@@ -4,7 +4,7 @@ const express = require('express')
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const db = require("./models");
-const DBseeder = require('./database/seeder')
+const DBseeder = require('./database/Seeder')
 
 // config app
 const app = express();
@@ -15,10 +15,10 @@ app.use(cors());
 
 
 
-// db.sequelize.sync({force: true}).then(() => {
-//     console.log('DATABASE SYNC');
-//     DBseeder.seedRoles()
-// });
+db.sequelize.sync({force: true}).then(() => {
+    console.log('DATABASE SYNC');
+    DBseeder.seedBase();
+});
 
 app.listen(3000, () => { 
     //logger.info( 'Server listening' )
@@ -50,3 +50,6 @@ app.get('/', (req,res) => {
 
 require('./router/auth.routes')(app);
 require('./router/user.routes')(app);
+require('./router/type.routes')(app);
+require('./router/brand.routes')(app);
+require('./router/modele.routes')(app);

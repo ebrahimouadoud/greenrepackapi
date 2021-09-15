@@ -26,6 +26,9 @@ db.sequelize = sequelize;
 
 db.user = require("../models/user.model.js")(sequelize, Sequelize);
 db.role = require("../models/role.model.js")(sequelize, Sequelize);
+db.modele = require("../models/modele.model.js")(sequelize, Sequelize);
+db.brand = require("../models/brand.model.js")(sequelize, Sequelize);
+db.type = require("../models/type.model")(sequelize, Sequelize);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",
@@ -41,7 +44,8 @@ db.user.belongsToMany(db.role, {
 
 });
 
-
+db.modele.belongsTo(db.brand, {foreignKey: 'brandId'});
+db.modele.belongsTo(db.type, {foreignKey: 'typeId'});
 
 db.ROLES = ["user", "admin", "manager", "association"];
 
