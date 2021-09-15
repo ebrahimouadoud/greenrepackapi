@@ -1,8 +1,9 @@
 const authService = require("../authmiddelwares/AuthService");
-const { SignupValidator } = require("../authmiddelwares");
+const { SignupValidator, UserValidator } = require("../authmiddelwares");
 const controller = require("../Controller/user.controller");
 const usermanagerController = require("../Controller/user-manager.controller");
 const authController = require("../Controller/auth.controller");
+
 
 module.exports = function(app) {
   app.use(function(req, res, next) {
@@ -29,7 +30,7 @@ module.exports = function(app) {
 
   app.get(
     "/api/users/all",
-    [authService.verifyToken,  authService.isAdmin || authService.isManager],
+    [authService.verifyToken,  authService.isAdmin],
     usermanagerController.getAllUsers
   );
 
@@ -42,22 +43,28 @@ module.exports = function(app) {
   app.post(
     "/api/user",
     [
+      UserValidator.userCreateValidator,
       SignupValidator.checkDuplicateUsernameOrEmail,
-      authService.verifyToken, 
+      authService.verifyToken,
       authService.isAdmin
   ],
-      usermanagerController.createUser
+      usermanagerController.createUser,
+      
   );
 
   app.put(
     "/api/user/:id",
-    [authService.verifyToken, authService.isAdmin],
-    usermanagerController.updateUser
+    [
+      UserValidator.userUpdateValidator,
+      authService.verifyToken, 
+      authService.isAdmin,
+    ],
+      usermanagerController.updateUser
   );
 
   app.put(
     "/api/user/toggleActivation/:id",
-    [authService.verifyToken, authService.isAdmin], // definir Est que just l Admin ou toutes les roles
+    [authService.verifyToken, authService.isAdmin], 
     usermanagerController.toggleActivation
   );
 

@@ -3,15 +3,15 @@ const logger = require('logger')
 const express = require('express')
 const bodyParser = require("body-parser");
 const cors = require("cors");
-// const util = require('util');
 const db = require("./models");
 const DBseeder = require('./database/seeder')
 
-const app = express()
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors("*"));
+// config app
+const app = express();
+app.use(express.json());    
+app.use(bodyParser.json({limit: '10mb', extended: true}));
+app.use(bodyParser.urlencoded({limit: '10mb', extended: true}));
+app.use(cors());
 
 
 

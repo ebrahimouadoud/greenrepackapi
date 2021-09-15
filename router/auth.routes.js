@@ -1,5 +1,6 @@
 const { SignupValidator } = require("../authmiddelwares");
 const authController = require("../Controller/auth.controller");
+const { UserValidator } = require("../authmiddelwares");
 
 module.exports = function(app) {
     app.use(function(req, res, next) {
@@ -13,6 +14,7 @@ module.exports = function(app) {
     app.post(
       "/api/auth/signup",
       [
+        UserValidator.userSignupValidator,
         SignupValidator.checkDuplicateUsernameOrEmail,
         SignupValidator.checkRolesExisted
       ],

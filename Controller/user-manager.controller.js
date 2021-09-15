@@ -4,31 +4,20 @@ const Role = require("../models/role.model")
 const db = require("../models")
 var bcrypt = require("bcryptjs");
 
+
 exports.getAllUsers = (req, res) => {
-    if(authService.isAdmin){
-        db.user.findAll().then( users => { 
-            users.forEach(user => {
-                if( user.getRoles()[0] == "admin" ){
-                    users.splice(users.findIndex(us => user.id == us.id ), 1 )
-                }
-            });
-            })
-    }
-    if(authService.isManager){
-        db.user.findAll().then( users => {
-            users.forEach(user => {
-                if( user.getRoles()[0] == "admin" ){
-                    users.splice(users.findIndex(us => user.id == us.id ), 1 )
-                }
-            });
+
+        db.user.findAll()
+        .then( users => { 
             res.status(200).send({
                 rows: users
-                });
-            })
-    }
-
-};
-
+              });
+          })
+        .catch(err => {
+            return res.status(400).send({ message: err.message });
+        });
+    
+}
 
 exports.getUserById = (req, res) => {
     db.user.findOne({
@@ -76,10 +65,7 @@ exports.createUser = (req, res) => {
     }
 };
 
-
-exports.updateUser = (req, res) => {
-    const id = req.params.id;
-
+proceedUpdate = function(id, req, res){
     db.user.update(req.body, {
         where: { id: id }
     })
@@ -99,6 +85,24 @@ exports.updateUser = (req, res) => {
                 message: "Error updating User with id=" + id
             });
         });
+}
+
+
+exports.updateUser = (req, res, next) => {  
+    const id = req.params.id;
+
+    db.user.count( { where : { id : id} } )
+        .then( count => {
+            if(count > 0){
+                proceedUpdate(id, req, res)
+            }else{
+                res.status(404).send({
+                    message: "user not found"
+                })
+            }
+        })
+
+    
 };
 
 
@@ -108,6 +112,9 @@ exports.toggleActivation = (req, res) => {
           id: req.params.id
         }
       }).then(user => {
+        if (!user) {
+            return res.status(404).send({ message: "User Not found." });
+        }
           let ns = "Blocked"
           if(user.status == "Blocked"){
               ns = "Active"

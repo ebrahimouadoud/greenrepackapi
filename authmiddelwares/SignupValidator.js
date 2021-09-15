@@ -4,6 +4,12 @@ const User = db.user
 
 checkDuplicateUsernameOrEmail = (req, res, next) => {
     // Username
+    if( req.body.username === 'undefined' || !req.body.username ){
+      res.status(400).send({
+        message: "Username in required!"
+      });
+      return;
+    }
     User.findOne({
       where: {
         username: req.body.username
@@ -17,6 +23,12 @@ checkDuplicateUsernameOrEmail = (req, res, next) => {
       }
   
       // Email
+      if( req.body.email === 'undefined' || !req.body.email ){
+        res.status(400).send({
+          message: "Email in required!"
+        });
+        return;
+      }
       User.findOne({
         where: {
           email: req.body.email
