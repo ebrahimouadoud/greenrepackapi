@@ -1,5 +1,5 @@
 const db = require("../models");
-const config = require("../conf/auth.conf");
+require('dotenv').config();
 const nodemailer = require("../conf/nodemailer.config");
 const User = db.user;
 const Role = db.role;
@@ -10,8 +10,6 @@ var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 
 exports.signup = (req, res) => {
-  const token = jwt.sign({ email: req.body.email }, config.secret);
-
   // Save User to Database
   User.create({
     lastname: req.body.lastname,
@@ -19,7 +17,7 @@ exports.signup = (req, res) => {
     username: req.body.username,
     email: req.body.email,
     password: bcrypt.hashSync(req.body.password, 8),
-    confirmationCode: token,
+    confirmationCode: jwt.sign({ email: req.body.email }, process.env.secret),
     telephone: req.body.telephone,
   })
     .then(user => {
@@ -64,7 +62,7 @@ exports.signin = (req, res) => {
         });
       }
 
-      var token = jwt.sign({ id: user.id }, config.secret, {
+      var token = jwt.sign({ id: user.id }, process.env.secret, {
         expiresIn: 86400 // 24 hours
       });
 
