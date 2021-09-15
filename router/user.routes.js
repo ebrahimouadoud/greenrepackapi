@@ -29,7 +29,7 @@ module.exports = function(app) {
 
   app.get(
     "/api/users/all",
-    [authService.verifyToken, authService.isAdmin || authService.isManager],
+    [authService.verifyToken,  authService.isAdmin || authService.isManager],
     usermanagerController.getAllUsers
   );
 
@@ -43,12 +43,10 @@ module.exports = function(app) {
     "/api/user",
     [
       SignupValidator.checkDuplicateUsernameOrEmail,
-      SignupValidator.checkRolesExisted,
-      authController.signup,
       authService.verifyToken, 
       authService.isAdmin
   ],
-  usermanagerController.createUser
+      usermanagerController.createUser
   );
 
   app.put(

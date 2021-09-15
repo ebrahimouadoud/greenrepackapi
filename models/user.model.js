@@ -17,7 +17,7 @@ module.exports = (sequelize, Sequelize) => {
     },
     status: {
       type: Sequelize.ENUM,
-      values: ['Pending', 'Active'],
+      values: ['Pending', 'Active', 'Blocked'],
       defaultValue: 'Pending'
     },
     confirmationCode: { 
