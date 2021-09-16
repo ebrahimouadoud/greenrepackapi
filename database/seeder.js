@@ -4,6 +4,8 @@ const DBseeder = require('./role-user-seeder')
 const ProductsTypesSeeder = require("./productstypes-seeder")
 const BrandsSeeder = require("./Brands-Seeder")
 const ModelsSeeder = require("./model-seeder")
+const telephoneSeeder = require("./telephone-seeder")
+const laptopSeeder = require("./laptop-seeder")
 
 module.exports = {
     seedBase : function(){
@@ -13,6 +15,8 @@ module.exports = {
             ProductsTypesSeeder.seedTypes()
             BrandsSeeder.seedBrands()
             ModelsSeeder.seedModels()
+            telephoneSeeder.seederPhone()
+            laptopSeeder.seederLaptop()
         });
     }
     
