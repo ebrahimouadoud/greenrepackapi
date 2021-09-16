@@ -14,20 +14,6 @@ module.exports = function(app) {
     next();
   });
 
-  // app.get("/api/test/all", controller.allAccess);
-
-  // app.get(
-  //   "/api/test/user",
-  //   [authService.verifyToken],
-  //   controller.userBoard
-  // );
-
-  // app.get(
-  //   "/api/test/mod",
-  //   [authService.verifyToken, authService.isManager],
-  //   controller.managerBoard
-  // );
-
   app.get(
     "/api/users/all",
     [authService.verifyToken,  authService.isAdmin],
@@ -36,7 +22,7 @@ module.exports = function(app) {
 
   app.get(
     "/api/user/:id",
-    [authService.verifyToken, authService.isAdmin || authService.isManager],
+    [authService.verifyToken, (authService.isAdmin ,authService.isManager)],
     usermanagerController.getUserById
   );
 

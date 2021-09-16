@@ -39,34 +39,32 @@ exports.createBrand = (req, res) => {
 
 // Delete Brand
 
-proceedDelete = function (id, req, res) {
-    db.brand.destroy(req.params, {
-        where: { id: req.params.id }
-    })
-        .then(num => {
-            if (num == 1) {
-                res.send({
-                    message: "Brand was Delete successfully."
-                });
-            } else {
-                res.send({
-                    message: `Cannot Delete Brand with id=${id}. Maybe User was not found or req.body is empty!`
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Error Deleting Brand with id=" + id
+proceedDeleteBrand = function (id, req, res) {
+    db.brand.destroy({
+        where: { id: id }
+    }).then(num => {
+        if (num == 1) {
+            res.send({
+                message: "Brand was Delete successfully."
             });
+        }
+    })
+    .catch(err => {
+        res.status(500).send({
+            message: "Error Deleting Brand with id=" + id
         });
+    });
 }
+
+
+
 
 exports.deleteBrand = (req, res) => {
     const id = req.params.id;
     db.brand.count({ where: { id: id } })
         .then(count => {
             if (count > 0) {
-                proceedDelete(id, req, res)
+                proceedDeleteBrand(id, req, res)
             } else {
                 res.status(404).send({
                     message: "Brand not found"

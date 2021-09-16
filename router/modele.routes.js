@@ -21,20 +21,20 @@ module.exports = function (app) {
     "/api/model/new",
     [
       authService.verifyToken,  
-      authService.isAdmin, 
+      (authService.isAdmin ,authService.isManager),
       ModeleValidator.checkDuplicateModeleName
     ], 
     modeleController.createModele
   );
 
-//   app.delete(
-//     "/api/model/:id",
-//     [
-//       authService.verifyToken,  
-//       authService.isAdmin
-//     ], 
-//     modeleController.createModele
-//   );
+  app.delete(
+    "/api/model/:id",
+    [
+      authService.verifyToken,  
+      (authService.isAdmin ,authService.isManager),
+    ], 
+    modeleController.deleteModele
+  );
 
 
 };

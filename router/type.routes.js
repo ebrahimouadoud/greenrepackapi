@@ -21,7 +21,7 @@ module.exports = function (app) {
     "/api/categories/new",
     [
       authService.verifyToken,  
-      authService.isAdmin, 
+      (authService.isAdmin ,authService.isManager),
       TypeValidator.checkDuplicateTypeName
     ], 
     typesController.createType
@@ -31,7 +31,7 @@ module.exports = function (app) {
     "/api/categories/:id",
     [
       authService.verifyToken,  
-      authService.isAdmin
+      (authService.isAdmin ,authService.isManager),
     ], 
     typesController.deleteType
   );

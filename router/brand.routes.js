@@ -21,7 +21,7 @@ module.exports = function (app) {
     "/api/brand/new",
     [
       authService.verifyToken,  
-      authService.isAdmin, 
+      (authService.isAdmin ,authService.isManager),
       BrandValidator.checkDuplicateBrandName
     ], 
     brandsController.createBrand
@@ -31,7 +31,7 @@ module.exports = function (app) {
     "/api/brand/:id",
     [
       authService.verifyToken,  
-      authService.isAdmin
+      (authService.isAdmin ,authService.isManager),
     ], 
     brandsController.deleteBrand
   );

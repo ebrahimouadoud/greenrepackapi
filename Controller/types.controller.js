@@ -39,26 +39,21 @@ exports.createType = (req, res) => {
 
 // Delete Type
 
-proceedDelete = function (id, req, res) {
-    db.type.destroy(req.params, {
-        where: { id: req.params.id }
-    })
-        .then(num => {
-            if (num == 1) {
-                res.send({
-                    message: "Type was Delete successfully."
-                });
-            } else {
-                res.send({
-                    message: `Cannot Delete type with id=${id}. Maybe User was not found or req.body is empty!`
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Error Deleting with id=" + id
+proceedDeleteType = function (id, req, res) {
+    db.type.destroy({
+        where: { id: id }
+    }).then(num => {
+        if (num == 1) {
+            res.send({
+                message: "Type was Delete successfully."
             });
+        }
+    })
+    .catch(err => {
+        res.status(500).send({
+            message: "Error Deleting Type with id=" + id
         });
+    });
 }
 
 exports.deleteType = (req, res) => {
@@ -66,10 +61,10 @@ exports.deleteType = (req, res) => {
     db.type.count({ where: { id: id } })
         .then(count => {
             if (count > 0) {
-                proceedDelete(id, req, res)
+                proceedDeleteType(id, req, res)
             } else {
                 res.status(404).send({
-                    message: "type not found"
+                    message: "Type not found"
                 })
             }
         })

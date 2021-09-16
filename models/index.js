@@ -1,15 +1,14 @@
-require('dotenv').config();
 const config = require("../conf/db.config.js");
 
 const Sequelize = require("sequelize");
 const sequelize = new Sequelize(
-  process.env.db,
-  process.env.dbuser,
-  process.env.dbpassword,
+  config.DB,
+  config.USER,
+  config.PASSWORD,
   {
-    host: process.env.dbhost,
-    dialect: process.env.dialect,
-
+    host: config.HOST,
+    dialect: config.DIALECT,
+    port: config.PORT,
     pool: {
       max: 5,
       min: 0,

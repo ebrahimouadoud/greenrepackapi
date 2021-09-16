@@ -39,34 +39,30 @@ exports.createModele = (req, res) => {
 
 // Delete Modele
 
-proceedDelete = function (id, req, res) {
-    db.modele.destroy(req.params, {
-        where: { id: req.params.id }
-    })
-        .then(num => {
-            if (num == 1) {
-                res.send({
-                    message: "Modele was Delete successfully."
-                });
-            } else {
-                res.send({
-                    message: `Cannot Delete Modele with id=${id}. Maybe User was not found or req.body is empty!`
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Error Deleting Modele with id=" + id
+proceedDeleteModele = function (id, req, res) {
+    db.modele.destroy({
+        where: { id: id }
+    }).then(num => {
+        if (num == 1) {
+            res.send({
+                message: "Modele was Delete successfully."
             });
+        }
+    })
+    .catch(err => {
+        res.status(500).send({
+            message: "Error Deleting Modele with id=" + id
         });
+    });
 }
+
 
 exports.deleteModele = (req, res) => {
     const id = req.params.id;
     db.modele.count({ where: { id: id } })
         .then(count => {
             if (count > 0) {
-                proceedDelete(id, req, res)
+                proceedDeleteModele(id, req, res)
             } else {
                 res.status(404).send({
                     message: "Modele not found"
