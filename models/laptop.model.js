@@ -26,7 +26,11 @@ module.exports = (sequelize, Sequelize) => {
       },
       ram: {
         type: Sequelize.STRING
+      },
+      modeleId: {
+        type: Sequelize.INTEGER
       }
+      
     });
   
     return Laptop;

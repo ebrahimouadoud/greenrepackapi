@@ -14,14 +14,14 @@ module.exports = function (app) {
 
 
   app.get(
-    "/api/model/all", modeleController.getAllModeles
+    "/api/model/all",[authService.verifyToken], modeleController.getAllModeles
   );
 
   app.post(
     "/api/model/new",
     [
       authService.verifyToken,  
-      (authService.isAdmin ,authService.isManager),
+      (authService.isAdmin || authService.isManager),
       ModeleValidator.checkDuplicateModeleName
     ], 
     modeleController.createModele
@@ -31,7 +31,7 @@ module.exports = function (app) {
     "/api/model/:id",
     [
       authService.verifyToken,  
-      (authService.isAdmin ,authService.isManager),
+      (authService.isAdmin || authService.isManager),
     ], 
     modeleController.deleteModele
   );

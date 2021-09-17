@@ -5,7 +5,7 @@ const db = require("../models");
 // Get All Modeled
 exports.getAllModeles = (req, res) => {
 
-    db.modele.findAll({ attributes: ['id', 'name'] })
+    db.modele.findAll()
         .then(modeles => {
             res.status(200).send({
                 rows: modeles
@@ -25,6 +25,9 @@ exports.createModele = (req, res) => {
         db.modele.create(
             {
                 name: req.body.name,
+                number: req.body.number,
+                typeId: req.body.typeId,
+                brandId: req.body.brandId
             }).then(modele => {
                 return res.status(201).json({
                     "modele": modele

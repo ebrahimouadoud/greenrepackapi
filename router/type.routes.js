@@ -3,6 +3,7 @@ const typesController = require("../Controller/types.controller");
 const { TypeValidator } = require("../authmiddelwares");
 
 
+
 module.exports = function (app) {
   app.use(function (req, res, next) {
     res.header(
@@ -14,14 +15,18 @@ module.exports = function (app) {
 
 
   app.get(
-    "/api/categories/all", typesController.getAllCategorie
+    "/api/categories/all",
+    [
+      authService.verifyToken
+    ], 
+    typesController.getAllCategorie
   );
 
   app.post(
     "/api/categories/new",
     [
       authService.verifyToken,  
-      (authService.isAdmin ,authService.isManager),
+      (authService.isAdmin || authService.isManager),
       TypeValidator.checkDuplicateTypeName
     ], 
     typesController.createType
@@ -31,7 +36,7 @@ module.exports = function (app) {
     "/api/categories/:id",
     [
       authService.verifyToken,  
-      (authService.isAdmin ,authService.isManager),
+      (authService.isAdmin || authService.isManager),
     ], 
     typesController.deleteType
   );

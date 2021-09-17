@@ -51,7 +51,9 @@ db.modele.belongsTo(db.brand, {foreignKey: 'brandId'});
 db.modele.belongsTo(db.type, {foreignKey: 'typeId'});
 db.produit.belongsTo(db.modele, {foreignKey: 'modeleId'});
 db.telephone.belongsTo(db.modele, {foreignKey: 'modeleId'});
+db.ordinateurportable.belongsTo(db.modele, {foreignKey: 'modeleId'});
 db.revente.belongsTo(db.produit, {foreignKey: 'produitId'});
+
 
 db.ROLES = ["user", "admin", "manager", "association"];
 

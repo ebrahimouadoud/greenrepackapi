@@ -14,14 +14,14 @@ module.exports = function (app) {
 
 
   app.get(
-    "/api/brand/all", brandsController.getAllBrands
+    "/api/brand/all",[authService.verifyToken], brandsController.getAllBrands
   );
 
   app.post(
     "/api/brand/new",
     [
       authService.verifyToken,  
-      (authService.isAdmin ,authService.isManager),
+      (authService.isAdmin || authService.isManager),
       BrandValidator.checkDuplicateBrandName
     ], 
     brandsController.createBrand
@@ -31,7 +31,7 @@ module.exports = function (app) {
     "/api/brand/:id",
     [
       authService.verifyToken,  
-      (authService.isAdmin ,authService.isManager),
+      (authService.isAdmin || authService.isManager),
     ], 
     brandsController.deleteBrand
   );
