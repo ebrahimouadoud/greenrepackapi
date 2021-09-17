@@ -52,11 +52,11 @@ proceedDeleteModele = function (id, req, res) {
             });
         }
     })
-    .catch(err => {
-        res.status(500).send({
-            message: "Error Deleting Modele with id=" + id
+        .catch(err => {
+            res.status(500).send({
+                message: "Error Deleting Modele with id=" + id
+            });
         });
-    });
 }
 
 

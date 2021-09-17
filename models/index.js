@@ -47,12 +47,19 @@ db.user.belongsToMany(db.role, {
 
 });
 
-db.modele.belongsTo(db.brand, {foreignKey: 'brandId'});
-db.modele.belongsTo(db.type, {foreignKey: 'typeId'});
-db.produit.belongsTo(db.modele, {foreignKey: 'modeleId'});
-db.telephone.belongsTo(db.modele, {foreignKey: 'modeleId'});
-db.ordinateurportable.belongsTo(db.modele, {foreignKey: 'modeleId'});
-db.revente.belongsTo(db.produit, {foreignKey: 'produitId'});
+
+db.modele.belongsTo(db.brand, { foreignKey: 'brandId' });
+db.modele.belongsTo(db.type, { foreignKey: 'typeId' });
+
+db.produit.belongsTo(db.modele, { foreignKey: 'modeleId' });
+
+db.telephone.belongsTo(db.modele, { foreignKey: 'modeleId' });
+
+db.ordinateurportable.belongsTo(db.modele, { foreignKey: 'modeleId' });
+
+db.revente.belongsTo(db.produit, { foreignKey: 'produitId' });
+db.revente.belongsTo(db.modele);
+db.revente.belongsTo(db.user, { foreignKey: 'userId' });
 
 
 db.ROLES = ["user", "admin", "manager", "association"];

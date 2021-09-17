@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-    const Produit = sequelize.define("produits", {
+    const Produit = sequelize.define("produit", {
         id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
@@ -22,11 +22,7 @@ module.exports = (sequelize, Sequelize) => {
             }
         },
         state: {
-            type: Sequelize.ENUM,
-            values: ['Neuf', 'Comme Neuf', 'Bonne état', 'Moyen', 'Mauvaise état']
-        },
-        valeur: {
-            type: Sequelize.FLOAT
+            type: Sequelize.JSON,
         },
         modeleId: {
             type: Sequelize.INTEGER

@@ -11,9 +11,12 @@ module.exports = (sequelize, Sequelize) => {
     },
     etat: {
       type: Sequelize.ENUM,
-      values: ['Envoyé', 'Pris En Charge', 'Retourné', 'En Vente', 'Vendu']
+      values: ['Envoyé','En Attendant', 'Pris En Charge', 'Retourné', 'En Vente', 'Vendu']
     },
     produitId: {
+      type: Sequelize.INTEGER
+    },
+    userId: {
       type: Sequelize.INTEGER
     }
   });

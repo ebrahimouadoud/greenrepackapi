@@ -1,4 +1,4 @@
-const authService = require("../authmiddelwares/AuthService");
+const authService  = require("../authmiddelwares/AuthService");
 const ResallController = require("../Controller/resall.controller");
 const { ResalValidator } = require("../authmiddelwares");
 
