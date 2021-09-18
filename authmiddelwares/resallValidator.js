@@ -2,7 +2,7 @@ const db = require("../models")
 
 
 
-checkRequired = (req, res) => {
+checkRequired = (req, res, next) => {
     // sim_lock
         if (req.body.sim_lock === 'undefined' || !req.body.sim_lock) {
             res.status(400).send({
@@ -51,7 +51,7 @@ checkRequired = (req, res) => {
             return;
         }
         
-        
+        next();
 }
 
 const ResallValidator = {

@@ -6,19 +6,30 @@ const user = process.env.user;
 const pass = process.env.pass;
 
 const transport = nodemailer.createTransport({
-  service: "Gmail",
-  auth: {
-    user: user,
-    pass: pass,
-  },
+    service: "Gmail",
+    auth: {
+        user: user,
+        pass: pass,
+    },
 });
 
+module.exports.sendContreOffreEmail = (username, email) => {
+    transport.sendMail({
+        from: '<Green Repack>',
+        to: email,
+        subject: "Contre Offre",
+        html: ` 
+        <h2>Hello ${username}</h2>
+        <h3>Test Contre Offre notify</h3> `,
+    }).catch(err => console.log(err));
+}
+
 module.exports.sendConfirmationEmail = (name, email, confirmationCode) => {
-  transport.sendMail({
-    from: '<Green Repack>',
-    to: email,
-    subject: "Veuillez confirmer votre compte",
-    html: `
+    transport.sendMail({
+        from: '<Green Repack>',
+        to: email,
+        subject: "Veuillez confirmer votre compte",
+        html: `
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
 
@@ -965,5 +976,5 @@ body {
 
 </html>
     `,
-  }).catch(err => console.log(err));
+    }).catch(err => console.log(err));
 };

@@ -54,3 +54,4 @@ require('./router/type.routes')(app);
 require('./router/brand.routes')(app);
 require('./router/modele.routes')(app);
 require('./router/resall.routes')(app);
+require('./router/product.routes')(app);

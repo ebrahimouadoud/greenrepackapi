@@ -11,10 +11,8 @@ module.exports = (sequelize, Sequelize) => {
     },
     etat: {
       type: Sequelize.ENUM,
-      values: ['Envoyé','En Attendant', 'Pris En Charge', 'Retourné', 'En Vente', 'Vendu']
-    },
-    produitId: {
-      type: Sequelize.INTEGER
+      values: ['En Attendant', 'Validé', 'Refusé', 'Accepté'],
+      defaultValue: 'En Attendant'
     },
     userId: {
       type: Sequelize.INTEGER

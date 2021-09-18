@@ -71,7 +71,7 @@ isManager = (req, res, next) => {
       }
 
       res.status(403).send({
-        message: "Require Agent Role!"
+        message: "Require Manager Role!"
       });
     });
   });

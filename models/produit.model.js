@@ -26,6 +26,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         modeleId: {
             type: Sequelize.INTEGER
+        },
+        userId: {
+            type: Sequelize.INTEGER
         }
     });
 

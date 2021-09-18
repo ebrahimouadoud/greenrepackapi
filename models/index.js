@@ -32,6 +32,7 @@ db.produit = require("../models/produit.model")(sequelize, Sequelize);
 db.revente = require("../models/revente.model")(sequelize, Sequelize);
 db.telephone = require("../models/telephone.model")(sequelize, Sequelize);
 db.ordinateurportable = require("../models/laptop.model")(sequelize, Sequelize);
+db.contreOffre = require("../models/contreOffre.model")(sequelize, Sequelize);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",
@@ -50,15 +51,19 @@ db.user.belongsToMany(db.role, {
 
 db.modele.belongsTo(db.brand, { foreignKey: 'brandId' });
 db.modele.belongsTo(db.type, { foreignKey: 'typeId' });
+db.modele.belongsTo(db.user)
+db.user.hasMany(db.modele)
+db.user.hasMany(db.produit)
+db.brand.hasMany(db.produit)
 
 db.produit.belongsTo(db.modele, { foreignKey: 'modeleId' });
+db.produit.belongsTo(db.user, { foreignKey: 'userId' });
 
 db.telephone.belongsTo(db.modele, { foreignKey: 'modeleId' });
 
 db.ordinateurportable.belongsTo(db.modele, { foreignKey: 'modeleId' });
 
 db.revente.belongsTo(db.produit, { foreignKey: 'produitId' });
-db.revente.belongsTo(db.modele);
 db.revente.belongsTo(db.user, { foreignKey: 'userId' });
 
 
