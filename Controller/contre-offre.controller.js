@@ -51,47 +51,83 @@ exports.CreateCO = (req, res) => {
 
 // PUT >> Refuse Contre Offre
 exports.RefuseCO = (req, res) => {
-	ContrOffre.findOne({
+	Resall.findOne({
 		where: {
 			id: req.params.id,
 		},
 	})
-		.then((contreOffre) => {
-			if (!contreOffre) {
+		.then((resall) => {
+			if (!resall) {
 				return res.status(404).send({ message: 'Contre Offre Not Found.' })
-			} else {
-				contreOffre.etat = 'Accepté'
-				contreOffre.save()
-				return res.status(200).send({
-					message: 'Contre Offre Was Accepted Successfully',
+			}
+			if (resall.userId == req.userId) {
+				ContrOffre.findOne({
+					where: {
+						userId: req.userId,
+					},
+				}).then((contreOffre) => {
+					if (contreOffre.etat !== 'Refusé') {
+						contreOffre.etat = 'Refusé';
+						resall.destroy();
+						contreOffre.save();
+						return res.status(200).send({
+							message: 'Contre Offre Was Refused Successfully',
+						})
+					} else if (contreOffre.etat == 'Refusé') {
+						return res.status(200).send({
+							message: 'Contre Offre has Already Refused',
+						})
+					}
 				})
+			}
+			else {
+				return res.status(404).send({ message: 'Unauthorized' })
 			}
 		})
 		.catch((err) => {
 			return res.status(400).send({ message: err.message })
 		})
-}
+};
 
 
 // POST >> Accepte Contre Offre
 exports.AccepteCO = (req, res) => {
-	ContrOffre.findOne({
+
+	Resall.findOne({
 		where: {
 			id: req.params.id,
 		},
 	})
-		.then((contreOffre) => {
-			if (!contreOffre) {
+		.then((resall) => {
+			if (!resall) {
 				return res.status(404).send({ message: 'Contre Offre Not Found.' })
-			} else {
-				contreOffre.etat = 'Accepté'
-				contreOffre.save()
-				return res.status(200).send({
-					message: 'Contre Offre Was Accepted Successfully',
+			}
+			if (resall.userId == req.userId) {
+				ContrOffre.findOne({
+					where: {
+						userId: req.userId,
+					},
+				}).then((contreOffre) => {
+					if (contreOffre.etat !== 'Accepté') {
+						contreOffre.etat = 'Accepté';
+						resall.etat = 'Accepté';
+						resall.save();
+						contreOffre.save();
+						return res.status(200).send({
+							message: 'Contre Offre Was Accepted Successfully',
+						})
+					} else if (contreOffre.etat == 'Accepté') {
+						return res.status(200).send({
+							message: 'Contre Offre has Already Accepted',
+						})
+					}
 				})
+			}
+			else {
+				return res.status(404).send({ message: 'Unauthorized' })
 			}
 		})
 		.catch((err) => {
 			return res.status(400).send({ message: err.message })
 		})
-}
+};

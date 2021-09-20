@@ -33,6 +33,12 @@ db.revente = require("../models/revente.model")(sequelize, Sequelize);
 db.telephone = require("../models/telephone.model")(sequelize, Sequelize);
 db.ordinateurportable = require("../models/laptop.model")(sequelize, Sequelize);
 db.contreOffre = require("../models/contreOffre.model")(sequelize, Sequelize);
+db.membre = require("../models/membre.model")(sequelize, Sequelize);
+db.adresse = require("../models/adresse.model")(sequelize, Sequelize);
+db.association = require("../models/association.model")(sequelize, Sequelize);
+db.entrepot = require("../models/entrepot.model")(sequelize, Sequelize);
+db.projetassociative = require("../models/projetAssociative.model")(sequelize, Sequelize);
+db.inscriptionAssociation = require("../models/insciptionAssociation.model")(sequelize, Sequelize);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",
@@ -51,10 +57,12 @@ db.user.belongsToMany(db.role, {
 
 db.modele.belongsTo(db.brand, { foreignKey: 'brandId' });
 db.modele.belongsTo(db.type, { foreignKey: 'typeId' });
-db.modele.belongsTo(db.user)
-db.user.hasMany(db.modele)
-db.user.hasMany(db.produit)
-db.brand.hasMany(db.produit)
+db.modele.belongsTo(db.user);
+db.user.hasMany(db.modele);
+db.user.hasMany(db.produit);
+db.brand.hasMany(db.produit);
+
+db.user.hasMany(db.contreOffre);
 
 db.produit.belongsTo(db.modele, { foreignKey: 'modeleId' });
 db.produit.belongsTo(db.user, { foreignKey: 'userId' });
@@ -66,6 +74,17 @@ db.ordinateurportable.belongsTo(db.modele, { foreignKey: 'modeleId' });
 db.revente.belongsTo(db.produit, { foreignKey: 'produitId' });
 db.revente.belongsTo(db.user, { foreignKey: 'userId' });
 
+db.membre.belongsTo(db.user, { foreignKey: 'userId' });
+db.membre.belongsTo(db.adresse, { foreignKey: 'adresseId' });
+
+db.association.belongsTo(db.user, { foreignKey: 'userId' });
+db.association.belongsTo(db.adresse, { foreignKey: 'adresseId' });
+
+db.entrepot.belongsTo(db.user, { foreignKey: 'userId' });
+db.entrepot.belongsTo(db.adresse, { foreignKey: 'adresseId' });
+
+db.projetassociative.belongsTo(db.association, { foreignKey: 'associationId' });
+db.inscriptionAssociation.belongsTo(db.association, { foreignKey: 'associationId' });
 
 db.ROLES = ["user", "admin", "manager", "association"];
 

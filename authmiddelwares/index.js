@@ -5,6 +5,7 @@ const TypeValidator = require('./typeValidator')
 const BrandValidator = require('./brandValidator')
 const ModeleValidator = require('./modeleValidator')
 const ResalValidator = require('./resallValidator')
+const ProjectValidator = require('./projectValidator')
 // const ProductValidator = require('./productValidator')
 
 module.exports = {
@@ -14,6 +15,7 @@ module.exports = {
     TypeValidator, 
     BrandValidator, 
     ModeleValidator, 
-    ResalValidator, 
+    ResalValidator,
+    ProjectValidator,
     // ProductValidator,
 }

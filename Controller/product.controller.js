@@ -8,13 +8,23 @@ const Modele = db.modele
 const Brand = db.brand
 
 
-exports.getAllProducts = (req, res) => {  
+exports.getAllProducts = (req, res) => { 
 
-
-                Resall.findAll({ where: { userId: req.userId } })
+    Product.findAll({
+        // Get ALL Product Of User By Id
+        where:{userId: req.userId,},
+        include: {
+            model: Modele,
+            attributes:['name', 'number'],
+            include: {
+                model: Brand,
+                attributes:['name']
+            }
+        }
+            })
                 .then(products => {
                     res.status(200).send({
-                        rows: products
+                        "Products": products
                     });
                 })
                 .catch(err => {

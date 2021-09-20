@@ -26,7 +26,7 @@ module.exports = function (app) {
 
     app.put("/api/resall/counteroffer/refuse/:id", [authService.verifyToken], ContreOffreController.RefuseCO);
 
-    app.post("/api/resall/counteroffer/accept/:id", [authService.verifyToken], ContreOffreController.AccepteCO);
+    app.put("/api/resall/counteroffer/accept/:id", [authService.verifyToken], ContreOffreController.AccepteCO);
 
 
 };

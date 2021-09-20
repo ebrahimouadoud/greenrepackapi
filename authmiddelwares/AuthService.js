@@ -93,7 +93,7 @@ isManagerOrAdmin = (req, res, next) => {
       }
 
       res.status(403).send({
-        message: "Require Agent or Admin Role!"
+        message: "Require Manager or Admin Role!"
       });
     });
   });
@@ -110,7 +110,7 @@ isAssociation = (req, res, next) => {
       }
 
       res.status(403).send({
-        message: "Require Agent Role!"
+        message: "Require Association Role!"
       });
     });
   });
