@@ -15,7 +15,7 @@ module.exports = function (app) {
 
     app.post("/api/resall/create", [authService.verifyToken, ResalValidator.checkRequired], ResallController.createResall);
 
-    app.put("/api/resall/proposal/accept/:id", [authService.verifyToken], ResallController.aceptResall);
+    app.put("/api/resall/proposal/accept/:id", authService.verifyToken, ResallController.aceptResall);
 
     app.put("/api/resall/proposal/refuse/:id", [authService.verifyToken], ResallController.refuseResall);
 

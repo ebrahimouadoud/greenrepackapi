@@ -20,6 +20,7 @@ exports.CreateCO = (req, res) => {
 						prixPropose: PrixProposall,
 						produitId: ['En Attend'],
 						userId: Revente.userId,
+						resallId: req.params.id
 					})
 						.then((contreOffre) => {
 							User.findOne({
@@ -51,6 +52,8 @@ exports.CreateCO = (req, res) => {
 
 // PUT >> Refuse Contre Offre
 exports.RefuseCO = (req, res) => {
+	// 1 -  récuperer le contre offre. => conntreoffre.etat = refuser
+	// 2 - récupérer la revente => etat = refuser
 	Resall.findOne({
 		where: {
 			id: req.params.id,
@@ -68,7 +71,7 @@ exports.RefuseCO = (req, res) => {
 				}).then((contreOffre) => {
 					if (contreOffre.etat !== 'Refusé') {
 						contreOffre.etat = 'Refusé';
-						resall.destroy();
+						resall.etat = 'Refusé'
 						contreOffre.save();
 						return res.status(200).send({
 							message: 'Contre Offre Was Refused Successfully',
@@ -81,14 +84,13 @@ exports.RefuseCO = (req, res) => {
 				})
 			}
 			else {
-				return res.status(404).send({ message: 'Unauthorized' })
+				return res.status(401).send({ message: 'manage only your own sales please.' })
 			}
 		})
 		.catch((err) => {
 			return res.status(400).send({ message: err.message })
 		})
 };
-
 
 // POST >> Accepte Contre Offre
 exports.AccepteCO = (req, res) => {
@@ -124,7 +126,7 @@ exports.AccepteCO = (req, res) => {
 				})
 			}
 			else {
-				return res.status(404).send({ message: 'Unauthorized' })
+				return res.status(401).send({ message: 'manage only your own sales please.' })
 			}
 		})
 		.catch((err) => {

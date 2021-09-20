@@ -60,7 +60,6 @@ db.modele.belongsTo(db.type, { foreignKey: 'typeId' });
 db.modele.belongsTo(db.user);
 db.user.hasMany(db.modele);
 db.user.hasMany(db.produit);
-db.brand.hasMany(db.produit);
 
 db.user.hasMany(db.contreOffre);
 
@@ -85,6 +84,9 @@ db.entrepot.belongsTo(db.adresse, { foreignKey: 'adresseId' });
 
 db.projetassociative.belongsTo(db.association, { foreignKey: 'associationId' });
 db.inscriptionAssociation.belongsTo(db.association, { foreignKey: 'associationId' });
+
+db.contreOffre.belongsTo(db.user, { foreignKey: 'userId' } )
+db.contreOffre.belongsTo(db.revente , { foreignKey: 'resallId' } )
 
 db.ROLES = ["user", "admin", "manager", "association"];
 

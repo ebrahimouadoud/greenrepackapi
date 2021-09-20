@@ -64,6 +64,7 @@ exports.createResall = (req, res) => {
 
 // PUT >> Accept Resall By Id (Revente)
 exports.aceptResall = (req, res) => {
+  console.log(' ACCEPT RESALL ')
   Resall.findOne({
     where: {
       id: req.params.id,
@@ -72,6 +73,9 @@ exports.aceptResall = (req, res) => {
     .then((resall) => {
       if (!resall) {
         return res.status(404).send({ message: 'Resall Not Found.' })
+      }
+      if (req.userId != resall.userId ) {
+        return res.status(401).send({ message: 'manage only your own sales please.' })
       }
       if (resall.etat == 'Accepté') {
         return res.status(500).send({
@@ -115,6 +119,9 @@ exports.refuseResall = (req, res, next) => {
     .then((resall) => {
       if (!resall) {
         return res.status(404).send({ message: 'Resall Not Found.' })
+      }
+      if (req.userId != resall.userId ) {
+        return res.status(401).send({ message: 'manage only your own sales please.' })
       }
       if (resall.etat == 'Refusé') {
         return res.status(500).send({
