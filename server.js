@@ -57,3 +57,4 @@ require('./router/resall.routes')(app);
 require('./router/product.routes')(app);
 require('./router/projet.routes')(app);
 require('./router/demandeInsciption.routes')(app);
+require('./router/entrepot.routes')(app);

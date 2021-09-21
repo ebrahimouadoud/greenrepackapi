@@ -29,7 +29,18 @@ module.exports = (sequelize, Sequelize) => {
         },
         userId: {
             type: Sequelize.INTEGER
-        }
+        },
+        phase: {
+            type: Sequelize.ENUM,
+            values: ['En Attend', 'Reçu', 'Renvoyé', 'En vente', 'Vendu'],
+            defaultValue: 'En Attend',
+        },
+        // prix_vente: {
+        //     type: Sequelize.INTEGER,
+        //     validate: {
+        //         min: 0
+        //     }
+        // }
     });
 
     return Produit;

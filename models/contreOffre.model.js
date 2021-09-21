@@ -14,7 +14,7 @@ module.exports = (sequelize, Sequelize) => {
             values: ['En Attend','Accepté', 'Refusé'],
             defaultValue: 'En Attend',
           },
-          resallId: {
+        resallId: {
             type: Sequelize.INTEGER
         },
         userId: {

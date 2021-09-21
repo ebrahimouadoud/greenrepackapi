@@ -1,4 +1,3 @@
-const authService = require("../authmiddelwares/AuthService");
 const DemandeController = require("../Controller/demande.controller");
 const { ProjectValidator } = require("../authmiddelwares");
 
@@ -17,8 +16,6 @@ module.exports = function (app) {
     (
         "/api/registerrequist/create", 
     [
-        authService.verifyToken, 
-        authService.isAssociation, 
         ProjectValidator.checkRequired
     ], 
         DemandeController.createDemande

@@ -1,3 +1,5 @@
+const { user } = require('../models');
+const nodemailer = require("../conf/nodemailer.config");
 const db = require('../models')
 const Produit = db.produit
 const Resall = db.revente;
@@ -30,6 +32,7 @@ exports.createResall = (req, res) => {
                 state: {
                   state_body: req.body.state_body,
                   state_screen: req.body.state_screen,
+                  sim_lock: req.body.sim_lock,
                 },
                 modeleId: _modele.id,
                 userId: req.userId,
@@ -64,7 +67,7 @@ exports.createResall = (req, res) => {
 
 // PUT >> Accept Resall By Id (Revente)
 exports.aceptResall = (req, res) => {
-  console.log(' ACCEPT RESALL ')
+  // console.log(' ACCEPT RESALL ')
   Resall.findOne({
     where: {
       id: req.params.id,
@@ -74,7 +77,7 @@ exports.aceptResall = (req, res) => {
       if (!resall) {
         return res.status(404).send({ message: 'Resall Not Found.' })
       }
-      if (req.userId != resall.userId ) {
+      if (req.userId != resall.userId) {
         return res.status(401).send({ message: 'manage only your own sales please.' })
       }
       if (resall.etat == 'Accepté') {
@@ -93,15 +96,25 @@ exports.aceptResall = (req, res) => {
           message: 'Resall Has Been Refused',
         })
       } else if (resall.etat == 'En Attendant') {
-        resall.etat = 'Accepté'
-        resall.save();
-
-        // Ticket Colissimo PDF
-        res.download("../docs/doc.pdf");
-
-        return res.status(200).send({
-          message: 'Resall Was Accepted Successfully',
+        User.findOne({
+          where: { id: req.userId },
+          attributes: ['username', 'firstname', 'lastname', 'email']
+        }).then(users => {
+          console.log(users);
+          resall.etat = 'Accepté'
+          resall.save();
+          // Ticket Colissimo PDF(NodeMailer)
+          nodemailer.sendAcceptResall(
+            users.username,
+            users.firstname,
+            users.lastname,
+            users.email,
+          );
+          return res.status(200).send({
+            message: 'Resall Was Accepted Successfully',
+          })
         })
+
       }
     })
     .catch((err) => {
@@ -115,12 +128,16 @@ exports.refuseResall = (req, res, next) => {
     where: {
       id: req.params.id,
     },
+    include:
+            [
+                { model: Produit, attributes: ['phase'] },
+            ]
   })
     .then((resall) => {
       if (!resall) {
         return res.status(404).send({ message: 'Resall Not Found.' })
       }
-      if (req.userId != resall.userId ) {
+      if (req.userId != resall.userId) {
         return res.status(401).send({ message: 'manage only your own sales please.' })
       }
       if (resall.etat == 'Refusé') {
@@ -137,10 +154,20 @@ exports.refuseResall = (req, res, next) => {
 
 
       } else if (resall.etat == 'En Attendant') {
-        resall.etat = 'Refusé'
-        resall.save();
+        
+        // Change la Phase de Produit (Renvoye)
+        // Recuperation produit By Id
+
+
+        Produit.findByPk(resall.produitId)
+        .then((result) => {
+          resall.etat = 'Refusé';
+          result.phase = 'Renvoyé';
+          resall.save();
+          result.save();
+        })
         return res.status(200).send({
-          message: 'Resall Was Refused Successfully',
+          message: 'Resall Has Been Refused Successfully',
         })
       }
       next();

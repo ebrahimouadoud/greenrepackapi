@@ -36,7 +36,7 @@ db.contreOffre = require("../models/contreOffre.model")(sequelize, Sequelize);
 db.membre = require("../models/membre.model")(sequelize, Sequelize);
 db.adresse = require("../models/adresse.model")(sequelize, Sequelize);
 db.association = require("../models/association.model")(sequelize, Sequelize);
-db.entrepot = require("../models/entrepot.model")(sequelize, Sequelize);
+db.depot = require("../models/depot.model")(sequelize, Sequelize);
 db.projetassociative = require("../models/projetAssociative.model")(sequelize, Sequelize);
 db.inscriptionAssociation = require("../models/insciptionAssociation.model")(sequelize, Sequelize);
 
@@ -79,8 +79,8 @@ db.membre.belongsTo(db.adresse, { foreignKey: 'adresseId' });
 db.association.belongsTo(db.user, { foreignKey: 'userId' });
 db.association.belongsTo(db.adresse, { foreignKey: 'adresseId' });
 
-db.entrepot.belongsTo(db.user, { foreignKey: 'userId' });
-db.entrepot.belongsTo(db.adresse, { foreignKey: 'adresseId' });
+db.depot.belongsTo(db.user, { foreignKey: 'userId' });
+db.depot.belongsTo(db.adresse, { foreignKey: 'adresseId' });
 
 db.projetassociative.belongsTo(db.association, { foreignKey: 'associationId' });
 db.inscriptionAssociation.belongsTo(db.association, { foreignKey: 'associationId' });

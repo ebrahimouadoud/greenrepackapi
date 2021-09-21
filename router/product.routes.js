@@ -15,7 +15,7 @@ module.exports = function (app) {
   app.get(
     "/api/products/all",
     [
-      authService.verifyToken, 
+      authService.verifyToken,
     ], 
     productController.getAllProducts
   );

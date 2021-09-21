@@ -28,6 +28,7 @@
     "logger": "0.0.1",
     "mysql2": "^2.2.5",
     "nodemailer": "^6.6.3",
+    "path": "^0.12.7",
     "pdf-creator-node": "^2.2.4",
     "pdfkit": "^0.12.3",
     "sequelize": "^6.6.5",

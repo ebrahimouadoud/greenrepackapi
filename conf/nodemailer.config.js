@@ -1,6 +1,6 @@
 require("dotenv").config();
 const nodemailer = require("nodemailer");
-require('dotenv').config();
+const path = require('path');
 
 const user = process.env.user;
 const pass = process.env.pass;
@@ -12,6 +12,38 @@ const transport = nodemailer.createTransport({
         pass: pass,
     },
 });
+
+
+module.exports.sendNotiyArrivalEmail = (Username, Email, ProductName, ModeleName, BrandName) => {
+    transport.sendMail({
+        from: '<Green Repack>',
+        to: "mustafa.idoufkir@gmail.com",
+        subject: `Arrival Product: ${ProductName}`,
+        html: ` 
+        <h2>Hello ${Username}</h2>
+        <p>Your Product: <b>${ProductName}</b>, Under Modele : <b>${ModeleName}</b>, Brand : <b>${BrandName}</b>. Arrival-Test</p> `,
+    }).catch(err => console.log(err));
+
+}
+
+
+module.exports.sendAcceptResall = (username, firstname, lastname, email) => {
+    transport.sendMail({
+        from: '<Green Repack>',
+        to: email,
+        subject: "Accept Resall",
+        attachments: [
+            {
+                filename: 'doc.pdf', // <= Here: made sure file name match
+                path: path.join(__dirname, '../docs/doc.pdf'), // <= Here
+                contentType: 'application/pdf'
+            }
+        ],
+        html: ` 
+        <h2>Hello ${firstname} ${lastname}</h2>
+        <h3>Test Accept Resall notify User : ${username}</h3> `,
+    }).catch(err => console.log(err));
+}
 
 module.exports.sendContreOffreEmail = (username, email) => {
     transport.sendMail({
