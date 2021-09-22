@@ -4,7 +4,7 @@ const express = require('express')
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const db = require("./models");
-const DBseeder = require('./database/Seeder')
+const DBseeder = require('./database/seeder')
 
 // config app
 const app = express();
