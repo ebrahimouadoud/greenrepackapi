@@ -1,5 +1,5 @@
 const DemandeController = require("../Controller/demande.controller");
-const { ProjectValidator } = require("../authmiddelwares");
+const { AssoDemandeValidator } = require("../authmiddelwares");
 
 
 module.exports = function (app) {
@@ -16,7 +16,7 @@ module.exports = function (app) {
     (
         "/api/registerrequist/create", 
     [
-        ProjectValidator.checkRequired
+        AssoDemandeValidator.checkRequired
     ], 
         DemandeController.createDemande
     );

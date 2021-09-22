@@ -12,25 +12,19 @@ module.exports = (sequelize, Sequelize) => {
       description: {
         type: Sequelize.TEXT
       },
-      dateCreation: {
-        type: Sequelize.DATEONLY
+      adresse: {
+        type: Sequelize.STRING
       },
-      debutPrevu: {
-        type: Sequelize.DATEONLY
+      RNA: {
+        type: Sequelize.STRING
       },
-      finPrevu: {
-        type: Sequelize.DATEONLY
-      },
-      budgetAttendu: {
-        type: Sequelize.FLOAT
+      mail: {
+        type: Sequelize.STRING
       },
       status: {
         type: Sequelize.ENUM,
         values: ['En Attendant', 'Validé', 'Refusé', 'Prie En Charge'],
         defaultValue: 'En Attendant'
-      },
-      associationId: {
-        type: Sequelize.INTEGER
       }
     });
   

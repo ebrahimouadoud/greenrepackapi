@@ -7,12 +7,9 @@ exports.createDemande = (req, res) => {
     InsciAssociation.create({
         name: req.body.name,
         description: req.body.description,
-        dateCreation: req.body.dateCreation,
-        debutPrevu: req.body.debutPrevu,
-        finPrevu: req.body.finPrevu,
-        budgetAttendu: req.body.budgetAttendu,
-        associationId: req.body.associationId,
-        
+        adresse: req.body.adresse,
+        RNA: req.body.finPrevu,
+        mail: req.body.mail
       }).then((result) => {
         return res.status(200).json({
             "result": result,

@@ -83,7 +83,7 @@ db.depot.belongsTo(db.user, { foreignKey: 'userId' });
 db.depot.belongsTo(db.adresse, { foreignKey: 'adresseId' });
 
 db.projetassociative.belongsTo(db.association, { foreignKey: 'associationId' });
-db.inscriptionAssociation.belongsTo(db.association, { foreignKey: 'associationId' });
+//db.inscriptionAssociation.belongsTo(db.association, { foreignKey: 'associationId' });
 
 db.contreOffre.belongsTo(db.user, { foreignKey: 'userId' } )
 db.contreOffre.belongsTo(db.revente , { foreignKey: 'resallId' } )
