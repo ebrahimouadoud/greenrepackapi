@@ -79,9 +79,25 @@ exports.acceptDemande = (req, res) => {
                   user.username, 
                   demande.mail, 
                   pswd)
+                  /** 
+                   * 
+                      name:
+                      description: 
+                      RNA:
+                      adresseId: 
+                      userId: 
+                   */
+                  db.association.create({
+                      name:user.username,
+                      description: demande.description,
+                      RNA: demande.RNA,
+                      adresseId: null,
+                      userId: user.id
+                    } )
                   return res.status(200).json({
                     "user": user
                 });
+
             }) ;
         }).catch(err => {
               res.status(500).send({

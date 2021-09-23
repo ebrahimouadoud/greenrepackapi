@@ -5,14 +5,17 @@ const db = require('../models')
 
 // POST >> Create Project (Association)
 exports.createProject = (req, res) => {
-    ProjetAssociative.create({
+    db.association.findOne(
+      {Where: { userId : req.userId }}
+    ).then( asso => {
+      ProjetAssociative.create({
         name: req.body.name,
         description: req.body.description,
         dateCreation: req.body.dateCreation,
         debutPrevu: req.body.debutPrevu,
         finPrevu: req.body.finPrevu,
         budgetAttendu: req.body.budgetAttendu,
-        associationId: req.body.associationId,
+        associationId: asso.id,
         
       }).then((result) => {
         return res.status(200).json({
@@ -21,6 +24,8 @@ exports.createProject = (req, res) => {
       }).catch((error) => {
         return res.status(500).json({ error: error.message })
       });
+    } )
+    
 }
 
 

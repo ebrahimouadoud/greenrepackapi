@@ -50,13 +50,6 @@ checkRequired = (req, res, next) => {
             });
             return;
         }
-    // Association ID
-        if (req.body.associationId === 'undefined' || !req.body.associationId) {
-            res.status(400).send({
-                message: "Association ID is required!"
-            });
-            return;
-        }
         
         next();
 }

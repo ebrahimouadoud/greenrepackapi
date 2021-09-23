@@ -9,11 +9,11 @@ module.exports = (sequelize, Sequelize) => {
         name: {
             type: Sequelize.STRING
         },
-        immatriculation: {
-            type: Sequelize.STRING
+        description: {
+            type: Sequelize.TEXT
         },
-        dateCreation: {
-            type: Sequelize.DATEONLY
+        RNA: {
+            type: Sequelize.STRING
         },
         adresseId: {
             type: Sequelize.INTEGER
