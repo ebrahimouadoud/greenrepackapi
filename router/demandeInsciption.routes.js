@@ -14,8 +14,10 @@ module.exports = function (app) {
 
 
     app.post( "/api/registerrequist/create", [ AssoDemandeValidator.checkRequired ],  DemandeController.createDemande );
-    app.put( "/api/registerrequist/accept/:id",[ authService.verifyToken, authService.isAdmin ], DemandeController.acceptDemande );
-    app.get( "/api/registerrequist",[ authService.verifyToken, authService.isAdmin ], DemandeController.getAllDemandes );
+    app.put( "/api/registerrequist/accept/:id",[ authService.verifyToken, authService.isManagerOrAdmin ], DemandeController.acceptDemande );
+    app.get( "/api/registerrequist",[ authService.verifyToken, authService.isManagerOrAdmin ], DemandeController.getAllDemandes );
+    app.get("/api/registerrequist/pending/count", [authService.verifyToken, authService.isManagerOrAdmin], DemandeController.pendingDemandeCount);
+    app.get("/api/registerrequist/pending", [authService.verifyToken, authService.isManagerOrAdmin], DemandeController.pendingDemande);
 
 
 

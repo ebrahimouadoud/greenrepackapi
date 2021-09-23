@@ -13,12 +13,14 @@ module.exports = function (app) {
     });
 
     app.get("/api/projects/all", [authService.verifyToken], ProjectController.allProjects);
+    app.get("/api/projects/pending/count", [authService.verifyToken, authService.isManagerOrAdmin], ProjectController.pendingProjectsCount);
+    app.get("/api/projects/pending", [authService.verifyToken, authService.isManagerOrAdmin], ProjectController.pendingProjects);
 
     app.post("/api/projects/create", [authService.verifyToken, authService.isAssociation, ProjectValidator.checkRequired], ProjectController.createProject);
 
-    app.put("/api/projects/validate/:id", [authService.verifyToken, authService.isManager], ProjectController.validateProject);
+    app.put("/api/projects/validate/:id", [authService.verifyToken, authService.isManagerOrAdmin], ProjectController.validateProject);
 
-    app.put("/api/projects/refuse/:id", [authService.verifyToken, authService.isManager], ProjectController.refuseProject);
+    app.put("/api/projects/refuse/:id", [authService.verifyToken, authService.isManagerOrAdmin], ProjectController.refuseProject);
 
     app.put("/api/projects/:id", [authService.verifyToken, ProjectValidator.checkRequired], ProjectController.updateProject);
 
