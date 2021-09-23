@@ -11,36 +11,73 @@ exports.createDemande = (req, res) => {
   //
   https.get('https://entreprise.data.gouv.fr/api/rna/v1/id/' + req.body.RNA, (resp) => {
     let data = '';
-
-    // A chunk of data has been received.
     resp.on('data', (chunk) => {
       data += chunk;
     });
-    //console.log(' resp ', resp)
-    // The whole response has been received. Print out the result.
     resp.on('end', () => {
       if (resp.statusCode == 404) {
         return res.status(404).json({ error: "RNA non trouvé" })
       } else if (resp.statusCode == 200) {
-        InsciAssociation.create({
-          name: req.body.name,
-          description: req.body.description,
-          adresse: req.body.adresse,
-          RNA: req.body.RNA,
-          mail: req.body.mail
-        }).then((result) => {
-          return res.status(200).json({
-            "result": result,
-          })
-        }).catch((error) => {
-          return res.status(500).json({ error: error.message })
-        });
+        db.user.findAndCountAll( 
+          {
+            where: { email : req.body.mail }
+          }
+        ).then( users => {
+            console.log('users.count  ', users.count )
+            if( users.count > 0){
+              return res.status(400).json({
+                "res": "Email already in use"
+              });
+            }else{
+              InsciAssociation.create({
+                name: req.body.name,
+                description: req.body.description,
+                adresse: req.body.adresse,
+                RNA: req.body.RNA,
+                mail: req.body.mail
+              }).then((result) => {
+                return res.status(200).json({
+                  "result": result,
+                })
+              }).catch((error) => {
+                return res.status(500).json({ error: error.message })
+              });
+            }
+        })
       }
     });
 
   }).on("error", (err) => {
     return res.status(500).json({ error: error.message })
   });
+}
+
+exports.refuseDemande = (req, res) => {
+  db.inscriptionAssociation.findOne({
+    where: {
+      id: req.params.id
+    }
+  }).then(demande => {
+    if (demande.status == "En Attendant") {
+      ns = "Refusé"
+    }else{
+      return res.status(400).json({
+        "res": "Action refusé, la demande est déja accepté/refusé"
+      });
+    }
+    demande.update(
+        { status: ns }
+      ).then(ud => {
+        return res.status(200).json({
+          "res": "Refused with success"
+        });
+      }, err=> {
+        return res.status(500).json({
+          "res": err.message
+        });
+      }
+    )
+  })
 }
 
 exports.acceptDemande = (req, res) => {
@@ -57,6 +94,10 @@ exports.acceptDemande = (req, res) => {
     let ns = "Validé"
     if (demande.status == "En Attendant") {
       ns = "Validé"
+    }else{
+      return res.status(400).json({
+        "res": "Action refusé, la demande est déja accepté/refusé"
+      });
     }
     demande.update(
       { status: ns }
@@ -74,7 +115,7 @@ exports.acceptDemande = (req, res) => {
           let role_id = db.role.findOne({
             where: { name: "association" }
           })
-          user.setRoles([4])
+          user.setRoles([role_id.id])
           nodemailer.sendDemandeAccept(
             user.username,
             demande.mail,
