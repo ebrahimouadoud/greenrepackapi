@@ -96,13 +96,13 @@ exports.refuseProject = (req, res) => {
       if (!result) {
         return res.status(404).send({ message: 'Project Not Found.' })
       }
-      if (result.status == 'Refusé') {
+      if (result.status == 'Refusé' || result.status == 'Validé') {
         return res.status(500).send({
-          message: 'Project Has Already been Refused',
+          message: 'Project Has Already been Refused/Validated',
         })
 
 
-      } else if (result.status !== 'Refusé') {
+      } else {
         result.status = 'Refusé'
         result.save();
         return res.status(200).send({
@@ -129,9 +129,9 @@ exports.validateProject = (req, res) => {
       if (!result) {
         return res.status(404).send({ message: 'Project Not Found.' })
       }
-      if (result.status == 'Validé') {
+      if (result.status == 'Refusé' || result.status == 'Validé') {
         return res.status(500).send({
-          message: 'Project Has Already been Validate',
+          message: 'Project Has Already been Refused/Validated',
         })
 
 
