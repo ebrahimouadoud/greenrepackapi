@@ -8,7 +8,7 @@ exports.createDemande = (req, res) => {
         name: req.body.name,
         description: req.body.description,
         adresse: req.body.adresse,
-        RNA: req.body.finPrevu,
+        RNA: req.body.RNA,
         mail: req.body.mail
       }).then((result) => {
         return res.status(200).json({
