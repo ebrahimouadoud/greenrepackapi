@@ -13,11 +13,30 @@ const transport = nodemailer.createTransport({
     },
 });
 
+module.exports.returnProductEmail = (Username, Email, ProductName, ModeleName, BrandName) => {
+    transport.sendMail({
+        from: '<Green Repack>',
+        to: Email,
+        subject: `Return Product: ${ProductName}`,
+        attachments: [
+            {
+                filename: 'colissimo.pdf', // <= Colissimo Ticket
+                path: path.join(__dirname, '../docs/colissimo.pdf'),
+                contentType: 'application/pdf'
+            }
+        ],
+        html: ` 
+        <h2>Hello ${Username}</h2>
+        <p>Your Product: <b>${ProductName}</b>, Under Modele : <b>${ModeleName}</b>, Brand : <b>${BrandName}</b>. <br>Return-Test</p> `,
+    }).catch(err => console.log(err));
+
+}
+
 
 module.exports.sendNotiyArrivalEmail = (Username, Email, ProductName, ModeleName, BrandName) => {
     transport.sendMail({
         from: '<Green Repack>',
-        to: "mustafa.idoufkir@gmail.com",
+        to: Email,
         subject: `Arrival Product: ${ProductName}`,
         html: ` 
         <h2>Hello ${Username}</h2>

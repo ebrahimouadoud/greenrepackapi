@@ -15,10 +15,10 @@ app.use(cors());
 
 
 
- db.sequelize.sync({force: true}).then(() => {
-     console.log('DATABASE SYNC');
-     DBseeder.seedBase();
- });
+//  db.sequelize.sync({force: true}).then(() => {
+//      console.log('DATABASE SYNC');
+//      DBseeder.seedBase();
+//  });
 
 app.listen(3000, () => { 
     //logger.info( 'Server listening' )
@@ -58,3 +58,4 @@ require('./router/product.routes')(app);
 require('./router/projet.routes')(app);
 require('./router/demandeInsciption.routes')(app);
 require('./router/entrepot.routes')(app);
+require('./router/card.routes')(app);

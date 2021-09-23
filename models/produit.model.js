@@ -35,12 +35,10 @@ module.exports = (sequelize, Sequelize) => {
             values: ['En Attend', 'Reçu', 'Renvoyé', 'En vente', 'Vendu'],
             defaultValue: 'En Attend',
         },
-        // prix_vente: {
-        //     type: Sequelize.INTEGER,
-        //     validate: {
-        //         min: 0
-        //     }
-        // }
+        prix_vente: {
+            type: Sequelize.INTEGER,
+            defaultValue: null
+        }
     });
 
     return Produit;

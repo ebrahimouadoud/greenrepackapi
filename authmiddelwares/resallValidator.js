@@ -3,26 +3,10 @@ const db = require("../models")
 
 
 checkRequired = (req, res, next) => {
-    // sim_lock
-        if (req.body.sim_lock === 'undefined' || !req.body.sim_lock) {
+    // State
+        if (req.body.state === 'undefined' || !req.body.state) {
             res.status(400).send({
-                message: "sim_lock is required!"
-            });
-            return;
-        }
-
-    // State Body 
-        if (req.body.state_body === 'undefined' || !req.body.state_body) {
-            res.status(400).send({
-                message: "State Body is required!"
-            });
-            return;
-        }
-
-    // State Screen 
-        if (req.body.state_screen === 'undefined' || !req.body.state_screen) {
-            res.status(400).send({
-                message: "State Screen is required!"
+                message: "State is required!"
             });
             return;
         }

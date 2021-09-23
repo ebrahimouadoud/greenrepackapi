@@ -6,9 +6,9 @@ const BrandValidator = require('./brandValidator')
 const ModeleValidator = require('./modeleValidator')
 const ResalValidator = require('./resallValidator')
 const ProjectValidator = require('./projectValidator')
-// const ProductValidator = require('./productValidator')
 const DepotValidator = require('./depotValidator')
 const AssoDemandeValidator = require('./AssoDemandeValidator')
+const ProductValidator = require('./ProductUpdatValidator')
 
 module.exports = {
     authservice, 
@@ -20,6 +20,6 @@ module.exports = {
     ResalValidator,
     ProjectValidator,
     AssoDemandeValidator,
-    // ProductValidator,
     DepotValidator,
+    ProductValidator
 }

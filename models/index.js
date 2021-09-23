@@ -39,6 +39,7 @@ db.association = require("../models/association.model")(sequelize, Sequelize);
 db.depot = require("../models/depot.model")(sequelize, Sequelize);
 db.projetassociative = require("../models/projetAssociative.model")(sequelize, Sequelize);
 db.inscriptionAssociation = require("../models/insciptionAssociation.model")(sequelize, Sequelize);
+db.card = require("./card.model")(sequelize, Sequelize);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",
@@ -85,8 +86,12 @@ db.depot.belongsTo(db.adresse, { foreignKey: 'adresseId' });
 db.projetassociative.belongsTo(db.association, { foreignKey: 'associationId' });
 //db.inscriptionAssociation.belongsTo(db.association, { foreignKey: 'associationId' });
 
-db.contreOffre.belongsTo(db.user, { foreignKey: 'userId' } )
-db.contreOffre.belongsTo(db.revente , { foreignKey: 'resallId' } )
+db.contreOffre.belongsTo(db.user, { foreignKey: 'userId' } );
+db.contreOffre.belongsTo(db.revente , { foreignKey: 'resallId' } );
+
+db.card.belongsTo(db.produit , { foreignKey: 'produitId' } );
+db.card.belongsTo(db.user , { foreignKey: 'userId' } );
+// db.card.hasMany(db.produit);
 
 db.ROLES = ["user", "admin", "manager", "association"];
 

@@ -27,12 +27,13 @@
     "fs": "0.0.1-security",
     "jsonwebtoken": "^8.5.1",
     "logger": "0.0.1",
-    "mysql2": "^2.2.5",
+    "mysql2": "^2.3.0",
     "nodemailer": "^6.6.3",
     "path": "^0.12.7",
     "pdf-creator-node": "^2.2.4",
     "pdfkit": "^0.12.3",
     "sequelize": "^6.6.5",
+    "stripe": "^8.176.0",
     "util": "^0.12.4"
   },
   "devDependencies": {

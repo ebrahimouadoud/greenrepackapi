@@ -1,4 +1,3 @@
-const { user } = require('../models');
 const nodemailer = require("../conf/nodemailer.config");
 const db = require('../models')
 const Produit = db.produit
@@ -29,11 +28,7 @@ exports.createResall = (req, res) => {
                 description: req.body.description,
                 couleur: req.body.color,
                 age: req.body.age,
-                state: {
-                  state_body: req.body.state_body,
-                  state_screen: req.body.state_screen,
-                  sim_lock: req.body.sim_lock,
-                },
+                state: req.body.state,
                 modeleId: _modele.id,
                 userId: req.userId,
               }).then((produit) => {
