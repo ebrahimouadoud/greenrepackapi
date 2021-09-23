@@ -3,6 +3,9 @@ const db = require('../models')
  var express = require('express');
  var router = express.Router();
  const https = require('https');
+ const nodemailer = require("../conf/nodemailer.config");
+ var bcrypt = require("bcryptjs");
+
 // POST >> Create Demande d insciption (Association)
 exports.createDemande = (req, res) => {
     //
@@ -36,20 +39,54 @@ exports.createDemande = (req, res) => {
       });
 
     }).on("error", (err) => {
-      console.log("Error: " + err.message);
+      return res.status(500).json({ error: error.message })
     });
-    /*
-    InsciAssociation.create({
-        name: req.body.name,
-        description: req.body.description,
-        adresse: req.body.adresse,
-        RNA: req.body.RNA,
-        mail: req.body.mail
-      }).then((result) => {
-        return res.status(200).json({
-            "result": result,
-          })
-      }).catch((error) => {
-        return res.status(500).json({ error: error.message })
-      });*/
+}
+
+exports.acceptDemande = (req, res) => {
+  var pswd = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  var cpwd = bcrypt.hashSync(pswd, 8)
+  db.inscriptionAssociation.findOne({
+      where: {
+        id: req.params.id
+      }
+    }).then(demande => {
+      if (!demande) {
+          return res.status(404).send({ message: "Not found." });
+      }
+        let ns = "Validé"
+        if(demande.status == "En Attendant"){
+            ns = "Validé"
+        }
+        demande.update(
+            {status: ns }
+        ).then( us => {
+          db.user.create(
+            {
+                lastname: demande.name,
+                firstname: demande.name,
+                username: demande.name,
+                email: demande.mail,
+                password: cpwd,
+                status: "Active",
+                telephone: null,
+            }).then(user => {
+                let role_id = db.role.findOne({
+                    where: {name: "association"}
+                })
+                user.setRoles([4])
+                nodemailer.sendDemandeAccept(
+                  user.username, 
+                  demande.mail, 
+                  pswd)
+                  return res.status(200).json({
+                    "user": user
+                });
+            }) ;
+        }).catch(err => {
+              res.status(500).send({
+                  message: "Error updating Status with id=" + id
+              });
+          });
+    })
 }

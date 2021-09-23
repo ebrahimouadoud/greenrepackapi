@@ -26,6 +26,20 @@ module.exports.sendNotiyArrivalEmail = (Username, Email, ProductName, ModeleName
 
 }
 
+module.exports.sendDemandeAccept = (Username, Email, Password) => {
+    transport.sendMail({
+        from: '<Green Repack>',
+        to: Email,
+        subject: `Inscription accepté`,
+        html: ` 
+        <h2>Bonjour ${Username}</h2>
+        <p>Votre demande d'inscription est accepté chez green repack. 
+        
+        Votre mote de passe est : <b>${Password}</b>. `,
+    }).catch(err => console.log(err));
+
+}
+
 
 module.exports.sendAcceptResall = (username, firstname, lastname, email) => {
     transport.sendMail({

@@ -1,5 +1,6 @@
 const DemandeController = require("../Controller/demande.controller");
 const { AssoDemandeValidator } = require("../authmiddelwares");
+const authService = require("../authmiddelwares/AuthService");
 
 
 module.exports = function (app) {
@@ -12,14 +13,8 @@ module.exports = function (app) {
     });
 
 
-    app.post
-    (
-        "/api/registerrequist/create", 
-    [
-        AssoDemandeValidator.checkRequired
-    ], 
-        DemandeController.createDemande
-    );
+    app.post( "/api/registerrequist/create", [ AssoDemandeValidator.checkRequired ],  DemandeController.createDemande );
+    app.put( "/api/registerrequist/accept/:id",[ authService.verifyToken, authService.isAdmin ], DemandeController.acceptDemande );
 
 
 
