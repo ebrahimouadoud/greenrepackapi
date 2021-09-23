@@ -15,6 +15,7 @@ module.exports = function (app) {
 
     app.post( "/api/registerrequist/create", [ AssoDemandeValidator.checkRequired ],  DemandeController.createDemande );
     app.put( "/api/registerrequist/accept/:id",[ authService.verifyToken, authService.isAdmin ], DemandeController.acceptDemande );
+    app.get( "/api/registerrequist",[ authService.verifyToken, authService.isAdmin ], DemandeController.getAllDemandes );
 
 
 

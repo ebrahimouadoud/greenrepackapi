@@ -90,3 +90,15 @@ exports.acceptDemande = (req, res) => {
           });
     })
 }
+
+exports.getAllDemandes = (req, res) => {
+  db.inscriptionAssociation.findAll()
+        .then( demandes => { 
+            res.status(200).send({
+                rows: demandes
+              });
+          })
+        .catch(err => {
+            return res.status(400).send({ message: err.message });
+        });
+}
