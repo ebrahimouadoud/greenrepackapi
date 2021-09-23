@@ -112,10 +112,12 @@ exports.acceptDemande = (req, res) => {
           status: "Active",
           telephone: null,
         }).then(user => {
-          let role_id = db.role.findOne({
+          db.role.findOne({
             where: { name: "association" }
+          }).then( role => {
+            user.setRoles([role.id])
           })
-          user.setRoles([role_id.id])
+          
           nodemailer.sendDemandeAccept(
             user.username,
             demande.mail,
