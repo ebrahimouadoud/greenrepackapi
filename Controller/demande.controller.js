@@ -16,9 +16,6 @@ exports.createDemande = (req, res) => {
       //console.log(' resp ', resp)
       // The whole response has been received. Print out the result.
       resp.on('end', () => {
-        console.log(data);
-        console.log('resp')
-        console.log(resp.statusCode)
         if(resp.statusCode == 404){
           return res.status(404).json({ error: "RNA non trouvé" })
         }else if(resp.statusCode == 200){
