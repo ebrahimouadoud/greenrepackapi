@@ -209,3 +209,37 @@ exports.validateResall = (req, res, next) => {
       return res.status(400).send({ message: err.message })
     })
 };
+
+exports.getAllResall = (req, res) => {
+  User.findByPk(req.userId).then(user => {
+    user.getRoles().then(roles => {
+        if (roles[0].name === "user" ) {
+          Resall.findAll({
+                // Get ALL Resall Of User By Id
+                where: {userId: req.userId},
+            })
+                .then(revente => {
+                    res.status(200).send({
+                        "Resall": revente
+                    });
+                })
+                .catch(err => {
+                    return res.status(500).send({ message: err.message });
+                });
+        }
+        else if (roles[0].name === "admin" || roles[0].name === "manager") {
+
+          Resall.findAll()
+                .then(revente => {
+                    res.status(200).send({
+                      "Resall": revente
+                    });
+                })
+                .catch(err => {
+                    return res.status(500).send({ message: err.message });
+                });
+        }
+        
+    });
+});
+}

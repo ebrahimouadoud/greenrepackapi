@@ -52,39 +52,45 @@ exports.signin = (req, res) => {
       if (!user) {
         return res.status(404).send({ message: "User Not found." });
       }
+      if (user.status == "Pending") {
+        return res.status(400).send({ message: "User Not Actived. Please Confirme your account " });
+      } else if (user.status == "Blocked") {
+        return res.status(400).send({ message: "User Blocked. Please Contact Admin " });
+      } else {
+        var passwordIsValid = bcrypt.compareSync(
+          req.body.password,
+          user.password
+        );
 
-      var passwordIsValid = bcrypt.compareSync(
-        req.body.password,
-        user.password
-      );
+        if (!passwordIsValid) {
+          return res.status(401).send({
+            accessToken: null,
+            message: "Invalid Password!"
+          });
+        }
 
-      if (!passwordIsValid) {
-        return res.status(401).send({
-          accessToken: null,
-          message: "Invalid Password!"
+        var token = jwt.sign({ id: user.id }, process.env.secret, {
+          expiresIn: 86400 // 24 hours
+        });
+
+        var authorities = [];
+        user.getRoles().then(roles => {
+          for (let i = 0; i < roles.length; i++) {
+            authorities.push("ROLE_" + roles[i].name.toUpperCase());
+          }
+          res.status(200).send({
+            id: user.id,
+            lastname: user.lastname,
+            firstname: user.firstname,
+            username: user.username,
+            email: user.email,
+            roles: authorities,
+            accessToken: token,
+            password: user.password,
+          });
         });
       }
 
-      var token = jwt.sign({ id: user.id }, process.env.secret, {
-        expiresIn: 86400 // 24 hours
-      });
-
-      var authorities = [];
-      user.getRoles().then(roles => {
-        for (let i = 0; i < roles.length; i++) {
-          authorities.push("ROLE_" + roles[i].name.toUpperCase());
-        }
-        res.status(200).send({
-          id: user.id,
-          lastname: user.lastname,
-          firstname: user.firstname,
-          username: user.username,
-          email: user.email,
-          roles: authorities,
-          accessToken: token,
-          password: user.password,
-        });
-      });
     })
     .catch(err => {
       res.status(500).send({ message: err.message });
@@ -94,7 +100,7 @@ exports.signin = (req, res) => {
 
 // User ValidationCode
 exports.userValidator = (req, res, next) => {
-  User.findOne({ 
+  User.findOne({
     where: {
       confirmationCode: req.params.confirmationCode
     }
@@ -104,16 +110,16 @@ exports.userValidator = (req, res, next) => {
       if (!user) {
         return res.status(404).send({ message: "User Not found." });
       }
-      if (user.status == 'Pending'){
+      if (user.status == 'Pending') {
         user.status = 'Active';
         user.save();
         return res.status(200).send({
           message: "User Was validate Successfully"
         });
-      } 
-      else if (user.status == 'Active'){
-        return res.status(500).send({ 
-          message: "User Has Already been Validated" 
+      }
+      else if (user.status == 'Active') {
+        return res.status(500).send({
+          message: "User Has Already been Validated"
         });
       }
     })

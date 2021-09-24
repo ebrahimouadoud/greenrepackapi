@@ -12,6 +12,8 @@ module.exports = function (app) {
         );
         next();
     });
+    
+    app.get("/api/resall/all", [ authService.verifyToken ], ResallController.getAllResall );
 
     app.post("/api/resall/create", [authService.verifyToken, ResalValidator.checkRequired], ResallController.createResall);
 

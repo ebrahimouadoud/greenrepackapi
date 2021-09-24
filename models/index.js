@@ -89,7 +89,7 @@ db.projetassociative.belongsTo(db.association, { foreignKey: 'associationId' });
 db.contreOffre.belongsTo(db.user, { foreignKey: 'userId' } );
 db.contreOffre.belongsTo(db.revente , { foreignKey: 'resallId' } );
 
-db.card.belongsTo(db.produit , { foreignKey: 'produitId' } );
+// db.card.belongsTo(db.produit , { foreignKey: 'produitId' } );
 db.card.belongsTo(db.user , { foreignKey: 'userId' } );
 // db.card.hasMany(db.produit);
 
