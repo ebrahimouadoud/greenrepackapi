@@ -51,10 +51,11 @@ exports.createUser = (req, res) => {
                 status: "Active",
                 telephone: req.body.telephone,
             }).then(user => {
-                let role_id = db.role.findOne({
+                db.role.findOne({
                     where: {name: req.body.role}
-                })
-                user.setRoles([role_id])
+                }).then( role => {
+                    user.setRoles([role.id])
+                  })
                 return res.status(201).json({
                     "user": user
                 });
