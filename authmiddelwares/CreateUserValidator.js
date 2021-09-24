@@ -1,5 +1,5 @@
 const { check, validationResult } = require('express-validator');
-
+const db = require("../models")
 // SignUp User Validation
 userSignupValidator = (req, res, next) => {
 
@@ -82,10 +82,22 @@ userCreateValidator = (req, res, next) => {
     }
     if (req.body.role === 'undefined' || !req.body.role) {
         res.status(400).send({
-            message: "Password is required!"
+            message: "role is required!"
         });
         return;
+    }else{
+        db.role.findOne({
+            where: {name: req.body.role}
+        }).then( role => {
+            if(!role){
+                res.status(404).send({
+                    message: "role not found!"
+                });
+                return;
+            }
+          })
     }
+    console.log('req.body.password :', req.body.password)
     if (req.body.password === 'undefined' || !req.body.password) {
         res.status(400).send({
             message: "Password is required!"
