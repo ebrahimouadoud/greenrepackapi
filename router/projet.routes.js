@@ -12,9 +12,11 @@ module.exports = function (app) {
         next();
     });
 
-    app.get("/api/projects/all", [authService.verifyToken], ProjectController.allProjects);
+    app.get("/api/projects/all", [authService.verifyToken ], ProjectController.allProjects);
     app.get("/api/projects/pending/count", [authService.verifyToken, authService.isManagerOrAdmin], ProjectController.pendingProjectsCount);
     app.get("/api/projects/pending", [authService.verifyToken, authService.isManagerOrAdmin], ProjectController.pendingProjects);
+    app.get("/api/projects/validated", [authService.verifyToken], ProjectController.validatedProjects);
+    //validatedProjects
 
     app.post("/api/projects/create", [authService.verifyToken, authService.isAssociation, ProjectValidator.checkRequired], ProjectController.createProject);
 

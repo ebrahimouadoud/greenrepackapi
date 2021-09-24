@@ -84,6 +84,24 @@ exports.pendingProjects = (req, res) => {
     });
 }
 
+exports.validatedProjects = (req, res) => {
+  ProjetAssociative.findAndCountAll({
+    where: { status: 'Validé' },
+    include: {
+      model: Association,
+      attributes: ['name']
+    }
+  })
+    .then(projects => {
+      res.status(200).send({
+        "Pending Projects": projects
+      });
+    })
+    .catch(err => {
+      return res.status(400).send({ message: err.message });
+    });
+}
+
 
 // PUT >> Refuse Project (Association)
 exports.refuseProject = (req, res) => {
