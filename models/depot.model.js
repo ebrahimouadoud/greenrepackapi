@@ -13,12 +13,9 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.ENUM,
             values: ['Disponible','Moyen', 'Saturé']
         },
-        adresseId: {
-            type: Sequelize.INTEGER
-        },
-        userId: {
-            type: Sequelize.INTEGER
-        },
+        adresse: {
+            type: Sequelize.STRING
+        }
     });
 
     return Depot;

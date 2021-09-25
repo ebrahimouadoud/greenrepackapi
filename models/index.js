@@ -80,8 +80,8 @@ db.membre.belongsTo(db.adresse, { foreignKey: 'adresseId' });
 db.association.belongsTo(db.user, { foreignKey: 'userId' });
 db.association.belongsTo(db.adresse, { foreignKey: 'adresseId' });
 
-db.depot.belongsTo(db.user, { foreignKey: 'userId' });
-db.depot.belongsTo(db.adresse, { foreignKey: 'adresseId' });
+//db.depot.belongsTo(db.user, { foreignKey: 'userId' });
+//db.depot.belongsTo(db.adresse, { foreignKey: 'adresseId' });
 
 db.projetassociative.belongsTo(db.association, { foreignKey: 'associationId' });
 //db.inscriptionAssociation.belongsTo(db.association, { foreignKey: 'associationId' });
