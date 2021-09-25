@@ -13,23 +13,23 @@ module.exports = function (app) {
   });
 
 
-  app.put(
-    "/api/card/:id",[authService.verifyToken], cardController.addToCard
+  app.post(
+    "/api/card/:id", [authService.verifyToken], cardController.addToCard
   );
 
   app.post(
     "/api/orders/create",
     [
-      authService.verifyToken,  
-    ], 
-    cardController.CreateOrder 
+      authService.verifyToken,
+    ],
+    cardController.CreateOrder
   );
 
   app.get(
     "/api/orders/me",
     [
-      authService.verifyToken,  
-    ], 
+      authService.verifyToken,
+    ],
     cardController.GetMyOrders
   );
 
@@ -38,7 +38,7 @@ module.exports = function (app) {
     [
       authService.verifyToken,
       authService.isManagerOrAdmin,
-    ], 
+    ],
     cardController.GetAllOrders
   );
 
@@ -47,7 +47,7 @@ module.exports = function (app) {
     [
       authService.verifyToken,
       authService.isManager,
-    ], 
+    ],
     cardController.SubmitOrderManager
   );
 

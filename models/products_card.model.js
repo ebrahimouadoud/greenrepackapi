@@ -1,15 +1,18 @@
 module.exports = (sequelize, Sequelize) => {
-    const Card = sequelize.define("card", {
+    const ProductsCard = sequelize.define("products_card", {
         id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
             autoIncrement: true,
             allowNull: false
         },
-        userId: {
+        produitId: {
+            type: Sequelize.INTEGER
+        },
+        cardId: {
             type: Sequelize.INTEGER
         },
     });
 
-    return Card;
+    return ProductsCard;
 };
