@@ -3,18 +3,29 @@ const User = require("../models/user.model")
 const Role = require("../models/role.model")
 const db = require("../models")
 var bcrypt = require("bcryptjs");
-
+const Op = db.Sequelize.Op;
 
 exports.getAllUsers = (req, res) => {
+        let _ppages = req.query.ppage ? parseInt(req.query.ppage ) : 5
+        let _offset = req.query.page ? parseInt(req.query.page ) - 1 : 0
 
-        db.user.findAll()
+        db.user.findAndCountAll({
+            limit: _ppages,
+            offset: !req.query.search ?_offset * _ppages: 0,
+            where :{
+                firstname: { [Op.like]: req.query.search ? '%' + req.query.search + '%' : "%%" }
+            },
+            include: [ {model:db.role, as:'roles', ttributes: ["name"]} ]
+        })
         .then( users => { 
-            res.status(200).send({
-                rows: users
-              });
+            return res.status(200).send({
+                rows: users.rows,
+                total: users.count,
+                tpages: Math.ceil(users.count / _ppages) 
+            });
           })
         .catch(err => {
-            return res.status(400).send({ message: err.message });
+            return res.status(500).send({ message: err.message });
         });
     
 }
