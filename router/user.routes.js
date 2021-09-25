@@ -22,7 +22,7 @@ module.exports = function(app) {
 
   app.get(
     "/api/user/:id",
-    [authService.verifyToken, (authService.isAdmin ,authService.isManager)],
+    [authService.verifyToken, authService.isManagerOrAdmin],
     usermanagerController.getUserById
   );
 
