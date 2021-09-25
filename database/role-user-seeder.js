@@ -32,6 +32,7 @@ module.exports ={
           firstname: "Ebrahim",
           lastname: "OUADOUD",
           email: "ebr.ouadoud@gmail.com",
+          status: "Active",
           password: bcrypt.hashSync("0000", 8)
         }).then(user => {
           user.setRoles([2])
@@ -41,6 +42,7 @@ module.exports ={
           firstname: "user1",
           lastname: "user1-L",
           email: "user1@local.dev",
+          status: "Active",
           password: bcrypt.hashSync("0000", 8)
         }).then(user => {
           user.setRoles([1])
@@ -50,6 +52,7 @@ module.exports ={
           firstname: "user2",
           lastname: "user2-L",
           email: "user2@local.dev",
+          status: "Active",
           password: bcrypt.hashSync("0000", 8)
         }).then(user => {
           user.setRoles([1])
@@ -59,6 +62,7 @@ module.exports ={
           firstname: "manager",
           lastname: "manager-L",
           email: "manager@local.dev",
+          status: "Active",
           password: bcrypt.hashSync("0000", 8)
         }).then(user => {
           user.setRoles([3])
@@ -68,6 +72,7 @@ module.exports ={
           firstname: "asso",
           lastname: "asso-L",
           email: "asso@local.dev",
+          status: "Active",
           password: bcrypt.hashSync("0000", 8)
         }).then(user => {
           user.setRoles([4])

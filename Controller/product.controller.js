@@ -9,47 +9,45 @@ const Brand = db.brand
 exports.getAllProducts = (req, res) => {
     User.findByPk(req.userId).then(user => {
         user.getRoles().then(roles => {
-            for (let i = 0; i < roles.length; i++) {
-                if (roles[i].name === "user" || roles[i].name === "association") {
-                    const wheres = { userId: req.userId };
-                    Product.findAll({
-                        // Get ALL Product Of User By Id
-                        where: wheres,
-                        include:
-                            [
-                                { model: User, attributes: ['username', 'email'] },
-                                { model: Modele, attributes: ['name', 'number'], include: [{ model: Brand, attributes: ['name'] }] },
-                            ]
-                    })
-                        .then(products => {
-                            res.status(200).send({
-                                "Products": products
-                            });
-                        })
-                        .catch(err => {
-                            return res.status(400).send({ message: err.message });
+            if (roles[0].name === "user" ) {
+                Product.findAll({
+                    // Get ALL Product Of User By Id
+                    where: {phase:'En vente'},
+                    include:
+                        [
+                            { model: User, attributes: ['username', 'email'] },
+                            { model: Modele, attributes: ['name', 'number'], include: [{ model: Brand, attributes: ['name'] }] },
+                        ]
+                })
+                    .then(products => {
+                        res.status(200).send({
+                            "Products": products
                         });
-                }
-                else if (roles[i].name === "admin" || roles[i].name === "manager") {
-                    const wheres = {};
-                    Product.findAll({
-                        where: wheres,
-                        include:
-                            [
-                                { model: User, attributes: ['username', 'email'] },
-                                { model: Modele, attributes: ['name', 'number'], include: [{ model: Brand, attributes: ['name'] }] },
-                            ]
                     })
-                        .then(products => {
-                            res.status(200).send({
-                                "Products": products
-                            });
-                        })
-                        .catch(err => {
-                            return res.status(400).send({ message: err.message });
-                        });
-                }
+                    .catch(err => {
+                        return res.status(400).send({ message: err.message });
+                    });
             }
+            else if (roles[0].name === "admin" || roles[0].name === "manager") {
+                const wheres = {};
+                Product.findAll({
+                    where: wheres,
+                    include:
+                        [
+                            { model: User, attributes: ['username', 'email'] },
+                            { model: Modele, attributes: ['name', 'number'], include: [{ model: Brand, attributes: ['name'] }] },
+                        ]
+                })
+                    .then(products => {
+                        res.status(200).send({
+                            "Products": products
+                        });
+                    })
+                    .catch(err => {
+                        return res.status(400).send({ message: err.message });
+                    });
+            }
+            
         });
     });
 }
@@ -159,7 +157,7 @@ exports.saleProduct = (req, res) => {
             else if (Produits.phase == 'Renvoyé') {
                 return res.status(400).send({ message: 'Product is already returned' });
             } else {
-                return res.status(400).send({ message: 'Product in Sold Phase' });
+                return res.status(400).send({ message: 'Product in saling Phase' });
             }
         } catch (error) {
             return res.status(500).json({ error: error.message })
