@@ -22,6 +22,7 @@ module.exports = function(app) {
     );
   
     app.post("/api/auth/signin", authController.signin);
-
-    app.get("/api/auth/validate/:confirmationCode", authController.userValidator)
+    app.get("/api/auth/me", authController.getUserByToken)
+    app.get("/api/auth/validate/:confirmationCode", 
+    authController.userValidator)
   };

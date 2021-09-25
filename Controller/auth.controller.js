@@ -70,7 +70,7 @@ exports.signin = (req, res) => {
         }
 
         var token = jwt.sign({ id: user.id }, process.env.secret, {
-          expiresIn: 86400 // 24 hours
+          expiresIn: 604800 // 24 hours
         });
 
         var authorities = [];
@@ -128,7 +128,43 @@ exports.userValidator = (req, res, next) => {
     });
 };
 
+// get user by token
+exports.getUserByToken = (req, res) => {
+  let token = req.headers["x-access-token"];
 
+  if (!token) {
+    return res.status(403).send({
+      message: "No token provided!"
+    });
+  }
+
+  jwt.verify(token, process.env.secret, (err, decoded) => {
+    if (err) {
+      return res.status(401).send({
+        message: "Unauthorized!"
+      });
+    }
+    User.findOne({ where : { id : decoded.id } }).then( user => {
+      var authorities = [];
+      user.getRoles().then(roles => {
+        for (let i = 0; i < roles.length; i++) {
+          authorities.push("ROLE_" + roles[i].name.toUpperCase());
+        }
+        return res.status(200).send({
+          id: user.id,
+          lastname: user.lastname,
+          firstname: user.firstname,
+          username: user.username,
+          email: user.email,
+          roles: authorities,
+          password: user.password,
+        });
+      });
+      
+    })
+    
+  });
+};
 // Logout
 
 exports.logout = async function (req, res) {
