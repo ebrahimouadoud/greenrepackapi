@@ -34,7 +34,8 @@ exports.getUserById = (req, res) => {
     db.user.findOne({
         where: {
             id: req.params.id
-        }
+        },
+        include: [ {model:db.role, as:'roles', ttributes: ["name"]} ]
     })
         .then(users => {
             if (!users) {
