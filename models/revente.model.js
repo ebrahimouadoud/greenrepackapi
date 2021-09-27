@@ -9,6 +9,12 @@ module.exports = (sequelize, Sequelize) => {
     prixPropose: {
       type: Sequelize.FLOAT
     },
+    bic:{
+      type: Sequelize.STRING
+    },
+    iban:{
+      type: Sequelize.STRING
+    },
     etat: {
       type: Sequelize.ENUM,
       values: ['En Attendant', 'Validé', 'Refusé', 'Accepté'],
