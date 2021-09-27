@@ -95,8 +95,10 @@ exports.aceptResall = (req, res) => {
           where: { id: req.userId },
           attributes: ['username', 'firstname', 'lastname', 'email']
         }).then(users => {
-          console.log(users);
+          //console.log(users);
           resall.etat = 'Accepté'
+          resall.bic = req.body.bic,
+          resall.iban = req.body.iban
           resall.save();
           // Ticket Colissimo PDF(NodeMailer)
           nodemailer.sendAcceptResall(
