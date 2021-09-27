@@ -15,6 +15,14 @@ module.exports = (sequelize, Sequelize) => {
         userId: {
             type: Sequelize.INTEGER
         },
+        status: {
+            type: Sequelize.ENUM,
+            values: ['Confirmé', 'Envoyé',],
+            defaultValue: 'Confirmé',
+        },
+        trackingNumber: {
+            type: Sequelize.STRING
+        },
     });
 
     return Command;

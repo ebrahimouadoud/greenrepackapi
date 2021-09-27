@@ -15,10 +15,10 @@ app.use(cors());
 
 //
 
-  db.sequelize.sync({force: true}).then(() => {
-      console.log('DATABASE SYNC');
-      DBseeder.seedBase();
-  });
+//   db.sequelize.sync({force: true}).then(() => {
+//       console.log('DATABASE SYNC');
+//       DBseeder.seedBase();
+//   });
 
 app.listen(3000, () => { 
     //logger.info( 'Server listening' )
