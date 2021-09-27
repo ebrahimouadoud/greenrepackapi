@@ -5,7 +5,13 @@ const db = require("../models");
 // Get All Modeled
 exports.getAllModeles = (req, res) => {
 
-    db.modele.findAll()
+    db.modele.findAll(
+        {
+            where :{
+                brandId: parseInt(req.query.brandId ), 
+                typeId: parseInt(req.query.typeId )
+            }
+        })
         .then(modeles => {
             res.status(200).send({
                 rows: modeles
