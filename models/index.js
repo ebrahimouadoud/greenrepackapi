@@ -114,6 +114,8 @@ db.contreOffre.belongsTo(db.revente, { foreignKey: 'resallId' });
 db.card.belongsTo(db.user, { foreignKey: 'userId' });
 // db.card.hasMany(db.produit);
 
+db.command.belongsTo(db.user, { foreignKey: 'userId' });
+
 db.ROLES = ["user", "admin", "manager", "association"];
 
 module.exports = db;

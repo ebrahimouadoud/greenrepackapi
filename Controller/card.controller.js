@@ -236,9 +236,7 @@ exports.CreateOrder = (req, res, next) => {
                                 Card.destroy({
                                     where: {id: _card.rows[0].id}
                                 }).then(FinalResult => {
-                                    return res.status(200).send({
-                                        message: "Success"
-                                    });
+                                    
                                 })
                                 
                             } catch (error) {
@@ -246,6 +244,9 @@ exports.CreateOrder = (req, res, next) => {
                             }
                         })
                     }
+                    return res.status(200).send({
+                        message: "Success"
+                    });
                 })
         })
     })
@@ -279,7 +280,6 @@ exports.GetAllOrders = (req, res) => {
         include:
             [
                 { model: User, attributes: ['username', 'email'] },
-                { model: Product, attributes: ['name', 'description'], include: [{ model: Modele, attributes: ['name', 'number'], include: [{ model: Brand, attributes: ['name'] }] }] },
             ]
     })
         .then(command => {

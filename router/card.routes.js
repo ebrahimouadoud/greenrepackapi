@@ -37,6 +37,7 @@ module.exports = function (app) {
     "/api/orders",
     [
       authService.verifyToken,
+      authService.isManagerOrAdmin
     ],
     cardController.GetAllOrders
   );
