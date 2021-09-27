@@ -34,6 +34,13 @@ checkRequired = (req, res, next) => {
             });
             return;
         }
+    //modeleId
+        if (req.body.modeleId === 'undefined' || !req.body.modeleId) {
+            res.status(400).send({
+                message: "modeleId is required!"
+            });
+            return;
+        }
         
         next();
 }
