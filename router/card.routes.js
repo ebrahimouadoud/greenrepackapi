@@ -37,7 +37,6 @@ module.exports = function (app) {
     "/api/orders",
     [
       authService.verifyToken,
-      authService.isManagerOrAdmin,
     ],
     cardController.GetAllOrders
   );
@@ -46,9 +45,9 @@ module.exports = function (app) {
     "/api/orders/send/:id",
     [
       authService.verifyToken,
-      authService.isManager,
+      authService.isManagerOrAdmin,
     ],
-    cardController.SubmitOrderManager
+    cardController.SendOrderManager
   );
 
 

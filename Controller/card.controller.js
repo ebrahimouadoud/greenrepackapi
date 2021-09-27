@@ -94,7 +94,7 @@ exports.addToCard = (req, res) => {
                     })
                 } catch (err) {
                     console.log(err);
-                    res.status(500).send("Something went wrong");
+                    res.status(400).send("Something went wrong");
                 }
             } else {
                 return res.status(400).send({ "res": "product not on sale phase" });
@@ -104,13 +104,78 @@ exports.addToCard = (req, res) => {
 }
 
 
+// STRIPE - Create New Customer
+
+var createCustomer = (email, name, description, SumPrice, Number, expMonth, expYear, Cvc, res, next) => {
+    var param = {};
+    param.email = email;
+    param.name = name;
+    param.description = description;
+
+
+    stripe.customers.create(param, (err, customer) => {
+        if (err) {
+            return  res.status(400).send({ err: err });
+        } if (customer) {
+            //Retrieve Customer
+            stripe.customers.retrieve(customer.id, (err, customer) => {
+                if (err) {
+                    return  res.status(400).send({ err: err });
+                } if (customer) {
+                    //Create Token
+                    var param = {};
+                    param.card = {
+                        number: Number,
+                        exp_month: expMonth,
+                        exp_year: expYear,
+                        cvc: Cvc
+                    }
+                    stripe.tokens.create(param, (err, token) => {
+                        if (err) {
+                            return  res.status(500).send({ err: err });
+                        } if (token) {
+                            //add Card To Customer
+                            stripe.customers.createSource(customer.id, { source: token.id }, (err, card) => {
+                                if (err) {
+                                    return res.status(400).send({ err: err });
+                                } if (card) {
+                                    // Charge Customer Through CustomerID
+                                    var param = {
+                                        amount: SumPrice,
+                                        currency: 'eur',
+                                        description: description,
+                                        customer: customer.id
+                                    }
+                                    stripe.charges.create(param, (err, charge) => {
+                                        if (err) {
+                                            return res.status(400).send({ err: err });
+                                        } if (charge) {
+                                            next();
+                                        } else {
+                                            return  res.status(400).send("Something wrong in Create Charge");
+                                        }
+                                    })
+                                } else {
+                                    return  res.status(400).send("Something wrong in Create Source");
+                                }
+                            })
+                        } else {
+                            return res.status(400).send("Something wrong in Create Token");
+                        }
+                    })
+                } else {
+                    return res.status(400).send("Something wrong in Customer Retrieve");
+                }
+            })
+        } else {
+            return res.status(400).send("Something wrong in Create Customer");
+        }
+    })
+}
+
+
 // POST >> Create Order
-exports.CreateOrder = (req, res) => {
-    // 1 - get Card 
-    // 2 - récuperer les produits et calculer le prix de la commande .
-    // Todo 3 - Générer le numéro de la commande example : 'Commande-de-user.name-numéro' 
-    // Todo 4 - créer la commande avec un status (confirmé)
-    // Todo 5 - changer le status des articles (phase: vendu)
+exports.CreateOrder = (req, res, next) => {
 
     Card.findAndCountAll({
         where: { userId: req.userId },
@@ -118,80 +183,87 @@ exports.CreateOrder = (req, res) => {
             [
                 {
                     model: Product,
-                    attributes: ['name', 'description', 'couleur', 'age', 'prix_vente'],
+                    attributes: ['id', 'name', 'description', 'couleur', 'age', 'prix_vente', 'phase'],
                 },
             ]
     }).then(_card => {
         let SumPrice = 0;
         let nameProduits = "";
+        if(!_card.rows[0] ){
+            return res.status(404).send({ res :"EMPTY CARD" })
+        }else if(_card.rows[0].produits.length == 0 ){
+            return res.status(404).send({ res :"EMPTY CARD" })
+        }
         for (let i = 0; i < _card.count; i++) {
             value = _card.rows[0].produits[i].dataValues.prix_vente;
             nameP = _card.rows[0].produits[i].dataValues.name;
-
+            exmple = _card.rows[0].produits[i];
             SumPrice += value;
             nameProduits += `Prd ${i + 1} : ${nameP} | `
-
         }
-
-        // console.log(SumPrice);
-        // return res.status(200).json({
-        //     "result":  _card
-        // })
 
         User.findOne({
             where: { id: req.userId },
-            attributes: ['username', 'email']
+            attributes: ['username', 'email', 'firstname', 'lastname']
         }).then(_user => {
             Command.create({
                 produits: nameProduits,
                 sumPrix: SumPrice,
-                userId: req.userId
+                userId: req.userId,
             })
                 .then(async _result => {
-                    // Moreover you can take more details from user 
-                    // like Address, Name, etc from form 
-                    stripe.customers.create({
-                        email: _user.email,
-                        source: req.body.stripeToken,
-                        name: _user.username,
-                    })
-                        .then((customer) => {
+                    const email = _user.email,
+                        name = `${_user.firstname} ${_user.lastname}`,
+                        description = `Commande-de-${_user.username}-N-00${_result.id}`,
+                        Number = req.body.number,
+                        expMonth = req.body.exp_month,
+                        expYear = req.body.exp_year,
+                        Cvc = req.body.cvc;
+                    SumPrice = Math.round(SumPrice * 100); // gives .00
 
-                            return stripe.charges.create({
-                                amount: SumPrice,    // Charing Rs 25 
-                                description: `Commande-de-${_user.username}-numéro`,
-                                currency: 'USD',
-                                customer: req.userId
-                            });
+                    createCustomer(email, name, description, SumPrice, Number, expMonth, expYear, Cvc, res, next);
+
+                }).then(result => {
+                    const Len = _card.rows[0].produits.length;
+                    for (var i = 0; i < Len; i++) {
+                        Product.findAll({
+                            where: { id: _card.rows[0].produits[i].dataValues.id },
+                        }).then(async resultat => {
+                            try {
+                                resultat[0].phase = 'Vendu';
+                                resultat[0].save();
+                                // console.log(_card.rows[0].id);
+                                Card.destroy({
+                                    where: {id: _card.rows[0].id}
+                                }).then(FinalResult => {
+                                    return res.status(200).send({
+                                        message: "Success"
+                                    });
+                                })
+                                
+                            } catch (error) {
+                                return res.status(500).send({ message: error })
+                            }
                         })
-                        .then((charge) => {
-                            res.send("Success") // If no error occurs 
-                        })
-                        .catch((err) => {
-                            res.send(err)    // If some error occurs 
-                        });
+                    }
                 })
         })
     })
-
-
-
-
 }
 
 
 // GET >> Get My Orders
 exports.GetMyOrders = (req, res) => {
-    Card.findAll({
+    Command.findAll({
         where: { userId: req.userId }
     })
-        .then((card) => {
-            if (!card) {
-                return res.status(404).send({ message: 'card Not Found.' })
+        .then((command) => {
+            if (!command) {
+                return res.status(404).send({ message: 'order Not Found.' })
             }
             else {
                 res.status(200).send({
-                    rows: card
+                    rows: command
                 });
             }
         })
@@ -200,34 +272,56 @@ exports.GetMyOrders = (req, res) => {
         });
 }
 
-
+// todo Command (Order)
 // GET >> Get All Orders By Manager Or Admin
 exports.GetAllOrders = (req, res) => {
-
-    Card.findAll({
+    Command.findAll({
         include:
             [
                 { model: User, attributes: ['username', 'email'] },
                 { model: Product, attributes: ['name', 'description'], include: [{ model: Modele, attributes: ['name', 'number'], include: [{ model: Brand, attributes: ['name'] }] }] },
             ]
     })
-        .then(card => {
-            if (!card) {
-                return res.status(404).send({ message: 'card Not Found.' })
+        .then(command => {
+            if (!command) {
+                return res.status(404).send({ message: 'order Not Found.' })
             }
             else {
-                res.status(200).send({
-                    rows: card
+                return res.status(200).send({
+                    rows: command
                 });
             }
         })
         .catch(err => {
             return res.status(500).send({ message: err.message });
         });
-
 }
 
 
-// PUT >> Submit Order By Manager
-exports.SubmitOrderManager = (req, res) => {
+// PUT >> Send Order By Manager
+exports.SendOrderManager = (req, res) => {
+    Command.findOne({
+        where: {
+            id: req.params.id,
+        },
+    })
+        .then((Commande) => {
+            if (!Commande) {
+                return res.status(404).send({ message: 'Command Not Found.' })
+            }
+            if (Commande.status == 'Confirmé') {
+                Commande.status = 'Envoyé';
+                Commande.save();
+                return res.status(200).send({
+                    message: 'Order Was Sent Successfully',
+                })
+            } else if (contreOffre.etat == 'Envoyé') {
+                return res.status(400).send({
+                    message: 'Order has already been sent',
+                })
+            }
+        })
+        .catch((err) => {
+            return res.status(400).send({ message: err.message })
+        })
 }
