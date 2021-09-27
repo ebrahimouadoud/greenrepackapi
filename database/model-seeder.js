@@ -12,16 +12,16 @@ const lenovoLaptopPortable = require('./lenovo-ord-portable')
 
 module.exports = {
     seedModels : function () {
-        appleMobiles.seedAppleMobiles();
-        htcPhones.seedHtcPhones();
-        googlePhones.seedGooglePhones();
-        asusPhones.seedAsusMobiles();
-        samsungPhone.seedSamsungMobiles();
+        //appleMobiles.seedAppleMobiles();
+        //htcPhones.seedHtcPhones();
+        //googlePhones.seedGooglePhones();
+        //asusPhones.seedAsusMobiles();
+        //samsungPhone.seedSamsungMobiles();
 
-        acerLaptopPortable.seedAcerLaptop();
-        dellLaptopPortable.seedDellLaptop();
-        hpLaptopPortable.seedHpLaptop();
-        lenovoLaptopPortable.seedLenovoLaptop();
+        //acerLaptopPortable.seedAcerLaptop();
+        //dellLaptopPortable.seedDellLaptop();
+        //hpLaptopPortable.seedHpLaptop();
+        //lenovoLaptopPortable.seedLenovoLaptop();
 
     }
 }

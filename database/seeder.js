@@ -15,8 +15,8 @@ module.exports = {
             ProductsTypesSeeder.seedTypes()
             BrandsSeeder.seedBrands()
             ModelsSeeder.seedModels()
-            telephoneSeeder.seederPhone()
-            laptopSeeder.seederLaptop()
+            //telephoneSeeder.seederPhone()
+            //laptopSeeder.seederLaptop()
             warehouseSeeder.seedWarehouses()
         });
     }
