@@ -24,7 +24,7 @@ module.exports = function (app) {
   app.post("/api/product/notifyarrival/:id",
     [
       authService.verifyToken,
-      authService.isManager
+      authService.isManagerOrAdmin
     ],
     productController.notiyArrival
   );
