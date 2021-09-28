@@ -17,6 +17,8 @@ module.exports = function (app) {
     "/api/card/:id", [authService.verifyToken], cardController.addToCard
   );
 
+  app.get("/api/card/me", [authService.verifyToken], cardController.getMyCard)
+
   app.post(
     "/api/orders/create",
     [
