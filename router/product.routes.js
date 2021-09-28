@@ -40,7 +40,7 @@ module.exports = function (app) {
   app.post("/api/product/sale/:id",
     [
       authService.verifyToken,
-      authService.isManager
+      authService.isManagerOrAdmin
     ],
     productController.saleProduct
   );

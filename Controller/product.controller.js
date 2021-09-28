@@ -168,6 +168,7 @@ exports.saleProduct = (req, res) => {
             if (Produits.phase == 'Reçu') {
                 Produits.prix_vente = req.body.prix_vente;
                 Produits.phase = 'En vente';
+                Produits.name = req.body.name;
                 Produits.save();
                 return res.status(200).send({ message: 'Product On sale phase Successfully' });
             }
