@@ -40,6 +40,12 @@ userSignupValidator = (req, res, next) => {
         });
         return;
     }
+    if (req.body.adresse === 'undefined' || !req.body.adresse) {
+        res.status(400).send({
+            message: "Adresse is required!"
+        });
+        return;
+    }
 
     next();
 
@@ -77,6 +83,12 @@ userCreateValidator = (req, res, next) => {
     if (req.body.telephone === 'undefined' || !req.body.telephone) {
         res.status(400).send({
             message: "Telephone is required!"
+        });
+        return;
+    }
+    if (req.body.adresse === 'undefined' || !req.body.adresse) {
+        res.status(400).send({
+            message: "Adresse is required!"
         });
         return;
     }
@@ -138,6 +150,13 @@ userUpdateValidator = (req, res, next) => {
     if (req.body.telephone === 'undefined' || !req.body.telephone) {
         res.status(400).send({
             message: "Telephone is required!"
+        });
+        return;
+    }
+
+    if (req.body.adresse === 'undefined' || !req.body.adresse) {
+        res.status(400).send({
+            message: "Adresse is required!"
         });
         return;
     }

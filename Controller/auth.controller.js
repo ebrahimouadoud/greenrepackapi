@@ -22,6 +22,7 @@ exports.signup = (req, res) => {
     password: bcrypt.hashSync(req.body.password, 8),
     confirmationCode: jwt.sign({ email: req.body.email }, process.env.secret),
     telephone: req.body.telephone,
+    adresse: req.body.adresse,
   })
     .then(user => {
       user.setRoles([1]).then(() => {

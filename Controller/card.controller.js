@@ -1,4 +1,5 @@
 require('dotenv').config();
+const nodemailer = require("../conf/nodemailer.config");
 const { card, produit } = require('../models');
 const db = require("../models");
 const Card = db.card;
@@ -115,12 +116,12 @@ var createCustomer = (email, name, description, SumPrice, Number, expMonth, expY
 
     stripe.customers.create(param, (err, customer) => {
         if (err) {
-            return  res.status(400).send({ err: err });
+            return res.status(400).send({ err: err });
         } if (customer) {
             //Retrieve Customer
             stripe.customers.retrieve(customer.id, (err, customer) => {
                 if (err) {
-                    return  res.status(400).send({ err: err });
+                    return res.status(400).send({ err: err });
                 } if (customer) {
                     //Create Token
                     var param = {};
@@ -132,7 +133,7 @@ var createCustomer = (email, name, description, SumPrice, Number, expMonth, expY
                     }
                     stripe.tokens.create(param, (err, token) => {
                         if (err) {
-                            return  res.status(500).send({ err: err });
+                            return res.status(500).send({ err: err });
                         } if (token) {
                             //add Card To Customer
                             stripe.customers.createSource(customer.id, { source: token.id }, (err, card) => {
@@ -152,11 +153,11 @@ var createCustomer = (email, name, description, SumPrice, Number, expMonth, expY
                                         } if (charge) {
                                             next();
                                         } else {
-                                            return  res.status(400).send("Something wrong in Create Charge");
+                                            return res.status(400).send("Something wrong in Create Charge");
                                         }
                                     })
                                 } else {
-                                    return  res.status(400).send("Something wrong in Create Source");
+                                    return res.status(400).send("Something wrong in Create Source");
                                 }
                             })
                         } else {
@@ -188,23 +189,28 @@ exports.CreateOrder = (req, res, next) => {
             ]
     }).then(_card => {
         let SumPrice = 0;
-        let nameProduits = "";
-        if(!_card.rows[0] ){
-            return res.status(404).send({ res :"EMPTY CARD" })
-        }else if(_card.rows[0].produits.length == 0 ){
-            return res.status(404).send({ res :"EMPTY CARD" })
+        let nameProduits = "",
+            nameProduitFacture = "",
+            totalFacture = 0;
+
+        if (!_card.rows[0]) {
+            return res.status(404).send({ res: "EMPTY CARD" })
+        } else if (_card.rows[0].produits.length == 0) {
+            return res.status(404).send({ res: "EMPTY CARD" })
         }
         for (let i = 0; i < _card.count; i++) {
             value = _card.rows[0].produits[i].dataValues.prix_vente;
             nameP = _card.rows[0].produits[i].dataValues.name;
             exmple = _card.rows[0].produits[i];
             SumPrice += value;
-            nameProduits += `Prd ${i + 1} : ${nameP} | `
+            nameProduits += `Prd ${i + 1} : ${nameP} | `;
+
+            nameProduitFacture += `<tr style="box-sizing: border-box;margin: 0;padding: 0;background: #fdfdfd;border-right: 1px solid #ddd;width: 100%;"><td style="box-sizing: border-box;font-family: 'Nunito';border: 1px solid #e3e3e3;border-top: 1px solid #fff;border-left-color: #fff;font-size: 11pt;background: #fdfdfd;min-width: 75px;padding: 3px 6px;line-height: 1.25;">${nameP}</td><td style="box-sizing: border-box;font-family: 'Nunito';border: 1px solid #e3e3e3;border-top: 1px solid #fff;border-left-color: #fff;font-size: 11pt;background: #fdfdfd;min-width: 75px;padding: 3px 6px;line-height: 1.25;">${value}&#8202;€</td></tr>`;
         }
 
         User.findOne({
             where: { id: req.userId },
-            attributes: ['username', 'email', 'firstname', 'lastname']
+            attributes: ['username', 'email', 'firstname', 'lastname', 'telephone', 'adresse']
         }).then(_user => {
             Command.create({
                 produits: nameProduits,
@@ -212,9 +218,16 @@ exports.CreateOrder = (req, res, next) => {
                 userId: req.userId,
             })
                 .then(async _result => {
-                    const email = _user.email,
+                    const myRnId = () => parseInt(Date.now() * Math.random());
+                    const RnId = myRnId();
+                    totalFacture = SumPrice;
+                    const dateCreation = `${_result.createdAt}`,
+                        adresseClt = `${_user.adresse}`,
+                        telephoneClt = `${_user.telephone}`,
+                        email = _user.email,
                         name = `${_user.firstname} ${_user.lastname}`,
-                        description = `Commande-de-${_user.username}-N-00${_result.id}`,
+                        username = `${_user.username}`,
+                        description = `Commande-de-${_user.username}-N-${RnId}`,
                         Number = req.body.number,
                         expMonth = req.body.exp_month,
                         expYear = req.body.exp_year,
@@ -222,6 +235,17 @@ exports.CreateOrder = (req, res, next) => {
                     SumPrice = Math.round(SumPrice * 100); // gives .00
 
                     createCustomer(email, name, description, SumPrice, Number, expMonth, expYear, Cvc, res, next);
+
+                    nodemailer.sendFacture(
+                        name,
+                        email,
+                        RnId,
+                        nameProduitFacture,
+                        totalFacture,
+                        dateCreation,
+                        adresseClt,
+                        telephoneClt,
+                    );
 
                 }).then(result => {
                     const Len = _card.rows[0].produits.length;
@@ -234,11 +258,11 @@ exports.CreateOrder = (req, res, next) => {
                                 resultat[0].save();
                                 // console.log(_card.rows[0].id);
                                 Card.destroy({
-                                    where: {id: _card.rows[0].id}
+                                    where: { id: _card.rows[0].id }
                                 }).then(FinalResult => {
-                                    
+
                                 })
-                                
+
                             } catch (error) {
                                 return res.status(500).send({ message: error })
                             }
@@ -273,7 +297,6 @@ exports.GetMyOrders = (req, res) => {
         });
 }
 
-// todo Command (Order)
 // GET >> Get All Orders By Manager Or Admin
 exports.GetAllOrders = (req, res) => {
     Command.findAll({
