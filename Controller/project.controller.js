@@ -204,9 +204,14 @@ exports.donateProject = (req, res) => {
     where: { id: req.params.id },
   }).then( projet => {
     if(!projet){
-      return res.status(400).json( "project not found" )
+      return res.status(404).json( "project not found" )
     }else{
-      return res.status(200).json("merci pour votre contribution")
+      if(req.body.montant > 20){
+        return res.status(200).json("merci pour votre contribution")
+      }else{
+        return res.status(400).json("merci pour votre contribution")
+      }
+      
     }
   } )
 }
