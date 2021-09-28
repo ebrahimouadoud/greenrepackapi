@@ -219,6 +219,9 @@ exports.getAllResall = (req, res) => {
         if (roles[0].name === "user" ) {
           Resall.findAll({
                 // Get ALL Resall Of User By Id
+                order: [
+                  ['createdAt', 'DESC'],
+                ],
                 where: {userId: req.userId},
                 include:
                 [
@@ -239,6 +242,9 @@ exports.getAllResall = (req, res) => {
         else if (roles[0].name === "admin" || roles[0].name === "manager") {
 
           Resall.findAll({
+            order: [
+              ['createdAt', 'DESC'],
+            ],
             include:
               [
                 {
