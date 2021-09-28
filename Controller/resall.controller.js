@@ -3,6 +3,7 @@ const db = require('../models')
 const Produit = db.produit
 const Resall = db.revente;
 const User = db.user;
+const Modele = db.modele 
 
 function randomIntFromInterval(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min)
@@ -219,6 +220,12 @@ exports.getAllResall = (req, res) => {
           Resall.findAll({
                 // Get ALL Resall Of User By Id
                 where: {userId: req.userId},
+                include:
+                [
+                  {
+                    model: Produit
+                  },
+                ]
             })
                 .then(revente => {
                     res.status(200).send({
@@ -231,7 +238,14 @@ exports.getAllResall = (req, res) => {
         }
         else if (roles[0].name === "admin" || roles[0].name === "manager") {
 
-          Resall.findAll()
+          Resall.findAll({
+            include:
+              [
+                {
+                  model: Produit, include: [{ model: Modele  }] 
+                },
+              ]
+          })
                 .then(revente => {
                     res.status(200).send({
                       "Resall": revente
