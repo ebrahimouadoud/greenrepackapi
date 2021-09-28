@@ -175,6 +175,20 @@ var createCustomer = (email, name, description, SumPrice, Number, expMonth, expY
 }
 
 
+exports.getMyCard = (req, res) => {
+    Card.findAndCountAll({
+        where: { userId: req.userId },
+        include:
+            [
+                {
+                    model: Product
+                },
+            ]
+    }).then(_card => {
+        return res.status(200).send(_card)
+    })
+}
+
 // POST >> Create Order
 exports.CreateOrder = (req, res, next) => {
 
