@@ -1,10 +1,14 @@
 const nodemailer = require("../conf/nodemailer.config");
 const db = require('../models');
+require('dotenv').config();
 const Product = db.produit;
 const User = db.user;
 const Modele = db.modele
 const Brand = db.brand
-
+const Resall = db.revente
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const twl_client = require('twilio')(accountSid, authToken);
 
 exports.getAllProducts = (req, res) => {
     User.findByPk(req.userId).then(user => {
@@ -32,8 +36,14 @@ exports.getAllProducts = (req, res) => {
                 const wheres = {};
                 Product.findAll({
                     where: wheres,
+                    order: [
+                        ['createdAt', 'DESC'],
+                      ],
                     include:
                         [
+                            { 
+                                model: Resall
+                            },
                             { model: User, attributes: ['username', 'email'] },
                             { model: Modele, attributes: ['name', 'number'], include: [{ model: Brand, attributes: ['name'] }] },
                         ]
@@ -56,17 +66,17 @@ exports.notiyArrival = (req, res) => {
     Product.findByPk(req.params.id, {
         include:
             [
-                { model: User, attributes: ['username', 'email'] },
+                { model: User },
                 { model: Modele, attributes: ['name', 'number'], include: [{ model: Brand, attributes: ['name'] }] },
             ]
-    }).then((Produits) => {
+    }).then((Produit) => {
         try {
-            if (Produits.phase == 'En Attend' || Produits.phase == 'Renvoyé') {
-                const Username = Produits.user.username;
-                const Email = Produits.user.email;
-                const ProductName = Produits.name;
-                const ModeleName = Produits.modele.name;
-                const BrandName = Produits.modele.brand.name;
+            if (Produit.phase == 'En Attend' || Produit.phase == 'Renvoyé') {
+                const Username = Produit.user.username;
+                const Email = Produit.user.email;
+                const ProductName = Produit.name;
+                const ModeleName = Produit.modele.name;
+                const BrandName = Produit.modele.brand.name;
                 nodemailer.sendNotiyArrivalEmail(
                     Username,
                     Email,
@@ -74,11 +84,19 @@ exports.notiyArrival = (req, res) => {
                     ModeleName,
                     BrandName
                 );
-                Produits.phase = 'Reçu';
-                Produits.save();
+                Produit.phase = 'Reçu';
+                Produit.save();
+                if(Produit.user.telephone){
+                    twl_client.messages
+                    .create({
+                        body: 'Votre revente : ' + Produit.name + '. est reçu dans nos locaux, merci pour votre confiance.',
+                        from: '+16108398994',
+                        to: Produit.user.telephone
+                    })
+                }
                 return res.status(200).send({ message: 'Product Received Successfully' });
             }
-            else if (Produits.phase == 'Reçu') {
+            else if (Produit.phase == 'Reçu') {
                 return res.status(400).send({ message: 'Product in Received Phase' });
             } else {
                 return res.status(400).send({ message: 'Product Sold Or in Sales Phase' });
