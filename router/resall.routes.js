@@ -24,7 +24,7 @@ module.exports = function (app) {
     app.put("/api/resall/validate/:id", [authService.verifyToken, authService.isManagerOrAdmin], ResallController.validateResall);
 
 
-    app.post("/api/resall/counteroffer/:id", [authService.verifyToken, authService.isManager], ContreOffreController.CreateCO);
+    app.post("/api/resall/counteroffer/:id", [authService.verifyToken, authService.isManagerOrAdmin], ContreOffreController.CreateCO);
 
     app.put("/api/resall/counteroffer/refuse/:id", [authService.verifyToken], ContreOffreController.RefuseCO);
 
