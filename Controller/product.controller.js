@@ -15,7 +15,9 @@ exports.getAllProducts = (req, res) => {
         user.getRoles().then(roles => {
             if (roles[0].name === "user" ) {
                 Product.findAll({
-                    // Get ALL Product Of User By Id
+                    order: [
+                        ['createdAt', 'DESC'],
+                    ],
                     where: {phase:'En vente'},
                     include:
                         [
