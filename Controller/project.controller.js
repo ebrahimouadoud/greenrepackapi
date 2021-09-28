@@ -200,4 +200,13 @@ exports.updateProject = (req, res) => {
 
 // PUT >> Donate Project (Association)
 exports.donateProject = (req, res) => {
+  ProjetAssociative.findOne({
+    where: { id: req.params.id },
+  }).then( projet => {
+    if(!projet){
+      return res.status(400).json( "project not found" )
+    }else{
+      return res.status(200).json("merci pour votre contribution")
+    }
+  } )
 }
