@@ -94,7 +94,7 @@ db.ordinateurportable.belongsTo(db.modele, { foreignKey: 'modeleId' });
 
 db.revente.belongsTo(db.produit, { foreignKey: 'produitId' });
 db.revente.belongsTo(db.user, { foreignKey: 'userId' });
-
+db.produit.hasOne(db.revente);
 db.membre.belongsTo(db.user, { foreignKey: 'userId' });
 db.membre.belongsTo(db.adresse, { foreignKey: 'adresseId' });
 
