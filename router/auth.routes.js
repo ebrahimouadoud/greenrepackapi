@@ -23,6 +23,8 @@ module.exports = function(app) {
   
     app.post("/api/auth/signin", authController.signin);
     app.get("/api/auth/me", authController.getUserByToken)
+    app.get("/api/getnewpass", authController.getNewPass)
+    app.post("/api/setnewpass", authController.setNewPass)
     app.get("/api/auth/validate/:confirmationCode", 
     authController.userValidator)
   };

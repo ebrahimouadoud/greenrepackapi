@@ -10,6 +10,7 @@ const Op = db.Sequelize.Op;
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
+const { rmSync } = require("fs");
 
 exports.signup = (req, res) => {
   //UserValidator.userSignupValidator()
@@ -39,6 +40,51 @@ exports.signup = (req, res) => {
       res.status(500).send({ message: err.message });
     });
 };
+
+exports.setNewPass = (req, res) => {
+  let token = req.headers["x-access-token"];
+  var newPws = bcrypt.hashSync(req.body.pwd, 8)
+  if (!token) {
+    return res.status(403).send({
+      message: "No token provided!"
+    });
+  }
+
+  jwt.verify(token, process.env.secret, (err, decoded) => {
+    if (err) {
+      return res.status(401).send({
+        message: "Unauthorized!"
+      });
+    }
+    User.findOne({ where : { id : decoded.id } }).then( user => {
+      var newPws = bcrypt.hashSync(req.body.pwd, 8)
+      user.password = newPws;
+      user.save()
+      res.send("updated")
+    }) 
+  })
+}
+
+exports.getNewPass = (req, res) => {
+  var pswd = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  var cpwd = bcrypt.hashSync(pswd, 8)
+  User.findOne({
+    where: {
+      email: req.query.email
+    }
+  })
+    .then(user => {
+      if (user) {
+        user.password = cpwd
+        user.save()
+        nodemailer.sendNewPassword(
+          user.username,
+          user.email,
+          pswd)
+      }
+      res.send('done')
+      })
+}
 
 exports.signin = (req, res) => {
   User.findOne({

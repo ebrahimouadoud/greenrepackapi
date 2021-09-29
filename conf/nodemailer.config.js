@@ -371,6 +371,18 @@ module.exports.sendDemandeAccept = (Username, Email, Password) => {
 
 }
 
+module.exports.sendNewPassword = (Username, Email, Password) => {
+    transport.sendMail({
+        from: '<Green Repack>',
+        to: Email,
+        subject: `Réinitilisation de mot de passe`,
+        html: ` 
+        <h2>Bonjour ${Username}</h2>
+        <p>  Votre nouveau mote de passe est : <b>${Password}</b>. `,
+    }).catch(err => console.log(err));
+
+}
+
 
 module.exports.sendAcceptResall = (username, firstname, lastname, email) => {
     transport.sendMail({
