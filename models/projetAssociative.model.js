@@ -15,6 +15,9 @@ module.exports = (sequelize, Sequelize) => {
       dateCreation: {
         type: Sequelize.DATEONLY
       },
+      collected:{
+        type : Sequelize.FLOAT
+      },
       debutPrevu: {
         type: Sequelize.DATEONLY
       },

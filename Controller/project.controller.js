@@ -1,7 +1,9 @@
 const db = require('../models')
 const ProjetAssociative = db.projetassociative;
 const Association = db.association;
-
+const User = db.user
+const axios = require('axios')
+const greenBankAdress = process.env.greenBankAdress;
 
 // POST >> Create Project (Association)
 exports.createProject = (req, res) => {
@@ -202,15 +204,30 @@ exports.updateProject = (req, res) => {
 exports.donateProject = (req, res) => {
   ProjetAssociative.findOne({
     where: { id: req.params.id },
+    include: [ Association ]
   }).then( projet => {
     if(!projet){
       return res.status(404).json( "project not found" )
     }else{
-      if( parseInt(req.body.montant) > 20){
-        return res.status(200).json("merci pour votre contribution")
-      }else{
-        return res.status(400).json("Solde insuffisant")
-      }
+      User.findByPk(req.userId)
+        .then(user => {
+          axios.post(greenBankAdress+ '/donate', 
+          {
+            "email": user.email,
+            "receiver" : projet.name + projet.association.name,
+            "amount": parseInt(req.body.montant)
+          }).then(__res => {
+            projet.collected += parseInt(req.body.montant)/2
+            if( projet.collected >= projet.budgetAttendu ){
+              projet.status = 'Prie En Charge'
+            }
+            projet.save()
+            return res.status(200).json("merci pour votre contribution")
+          },__err=>{
+            return res.status(400).json("Solde insuffisant")
+          }
+          )
+        })
       
     }
   } )
