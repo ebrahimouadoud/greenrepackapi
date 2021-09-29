@@ -17,6 +17,7 @@
   "author": "Ebrahim OUADOUD",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.21.4",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
@@ -32,6 +33,7 @@
     "path": "^0.12.7",
     "pdf-creator-node": "^2.2.4",
     "pdfkit": "^0.12.3",
+    "request-promise": "^4.2.6",
     "sequelize": "^6.6.5",
     "stripe": "^8.176.0",
     "twilio": "^3.68.0",
