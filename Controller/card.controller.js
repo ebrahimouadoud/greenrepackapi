@@ -9,7 +9,9 @@ const Brand = db.brand;
 const Modele = db.modele;
 const ProductsCard = db.productsCard;
 const Command = db.command;
-
+const request = require('request-promise');
+const axios = require('axios')
+const greenBankAdress = process.env.greenBankAdress;
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY
 const stripePublicKey = process.env.STRIPE_PUBLIC_KEY
 
@@ -280,6 +282,13 @@ exports.CreateOrder = (req, res, next) => {
                         adresseClt,
                         telephoneClt,
                     );
+                    console.log( '--------------------------')
+                    console.log(greenBankAdress)
+                    axios.post(greenBankAdress+ '/getReward', {
+                            "email": "ebr.ouadoud.or@gmail.com",
+                            "amount": Math.trunc(SumPrice/1000)
+                        })
+                        
 
                 }).then(result => {
                     const Len = _card.rows[0].produits.length;

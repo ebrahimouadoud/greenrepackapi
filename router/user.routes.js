@@ -26,6 +26,8 @@ module.exports = function(app) {
     usermanagerController.getUserById
   );
 
+  app.get( "/api/mybalance", [authService.verifyToken ], usermanagerController.getMyBalance );
+
   app.post(
     "/api/user",
     [

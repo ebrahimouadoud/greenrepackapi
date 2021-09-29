@@ -2,8 +2,10 @@ const authService = require("../authmiddelwares/AuthService");
 const User = require("../models/user.model")
 const Role = require("../models/role.model")
 const db = require("../models")
+const http = require('http');
 var bcrypt = require("bcryptjs");
 const Op = db.Sequelize.Op;
+const greenBankAdress = process.env.greenBankAdress;
 
 exports.getAllUsers = (req, res) => {
         let _ppages = req.query.ppage ? parseInt(req.query.ppage ) : 5
@@ -50,6 +52,29 @@ exports.getUserById = (req, res) => {
         });
 };
 
+exports.getMyBalance = (req, res ) => {
+    db.user.findOne({
+        where: {
+            id: req.userId
+        }
+    }).then(user => {
+        http.get(greenBankAdress+'/mybalace?email=' + user.email , (resp) => {
+            let data = '';
+            resp.on('data', (chunk) => {
+            data += chunk;
+            });
+            resp.on('end', () => {
+            if (resp.statusCode == 200) {
+                var repdata = JSON.parse(data)
+                return res.status(200).json( { balance: repdata.balance } )
+            }
+        });
+
+    }).on("error", (err) => {
+        return res.status(500).json({ error: err.message })
+    });
+    })
+}
 
 exports.createUser = (req, res) => {
     try {
