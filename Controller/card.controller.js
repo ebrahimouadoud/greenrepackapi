@@ -14,7 +14,9 @@ const stripeSecretKey = process.env.STRIPE_SECRET_KEY
 const stripePublicKey = process.env.STRIPE_PUBLIC_KEY
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY); //Put your secret key Stripe
-
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const twl_client = require('twilio')(accountSid, authToken);
 
 exports.FunctionAddToCart = async (req, res) => {
     const productId = req.params.id;
@@ -334,7 +336,7 @@ exports.GetAllOrders = (req, res) => {
     Command.findAll({
         include:
             [
-                { model: User, attributes: ['username', 'email'] },
+                { model: User},
             ]
     })
         .then(command => {
@@ -359,14 +361,25 @@ exports.SendOrderManager = (req, res) => {
         where: {
             id: req.params.id,
         },
+        include:
+            [
+                { model: User},
+            ]
     })
         .then((Commande) => {
             if (!Commande) {
                 return res.status(404).send({ message: 'Command Not Found.' })
             }
             if (Commande.status == 'Confirmé') {
+                Commande.trackingNumber = req.body.tracking
                 Commande.status = 'Envoyé';
                 Commande.save();
+                twl_client.messages
+                    .create({
+                        body: 'Votre Commande est envoyé, numéro de suivie : ' + req.body.tracking ,
+                        from: '+16108398994',
+                        to: Commande.user.telephone
+                    })
                 return res.status(200).send({
                     message: 'Order Was Sent Successfully',
                 })
