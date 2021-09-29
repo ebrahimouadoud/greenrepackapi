@@ -9,6 +9,9 @@ module.exports = (sequelize, Sequelize) => {
         produits: {
             type: Sequelize.TEXT
         },
+        adresseLivraison: {
+            type: Sequelize.TEXT
+        },
         sumPrix: {
             type: Sequelize.INTEGER
         },
