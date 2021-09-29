@@ -88,6 +88,7 @@ exports.signin = (req, res) => {
             roles: authorities,
             accessToken: token,
             password: user.password,
+            adresse: user.adresse,
           });
         });
       }
@@ -159,6 +160,7 @@ exports.getUserByToken = (req, res) => {
           email: user.email,
           roles: authorities,
           password: user.password,
+          adresse: user.adresse,
         });
       });
       

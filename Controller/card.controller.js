@@ -189,6 +189,23 @@ exports.getMyCard = (req, res) => {
     })
 }
 
+exports.deleteFromCard = (req, res) => {
+    console.log(' req.params.id ::',req.params.id)
+    Card.findOne({
+        where: { userId: req.userId },
+    }).then(_card => {
+        db.productsCard.destroy( 
+            { where: {
+                cardId: _card.id ,produitId: req.params.id
+            }}
+        )
+        return res.status(200).send({ res: "ok" })
+    })
+        
+        
+    
+}
+
 // POST >> Create Order
 exports.CreateOrder = (req, res, next) => {
 
@@ -230,13 +247,14 @@ exports.CreateOrder = (req, res, next) => {
                 produits: nameProduits,
                 sumPrix: SumPrice,
                 userId: req.userId,
+                adresseLivraison: req.body.adresse
             })
                 .then(async _result => {
                     const myRnId = () => parseInt(Date.now() * Math.random());
                     const RnId = myRnId();
                     totalFacture = SumPrice;
                     const dateCreation = `${_result.createdAt}`,
-                        adresseClt = `${_user.adresse}`,
+                        adresseClt = `${req.body.adresse}`,
                         telephoneClt = `${_user.telephone}`,
                         email = _user.email,
                         name = `${_user.firstname} ${_user.lastname}`,

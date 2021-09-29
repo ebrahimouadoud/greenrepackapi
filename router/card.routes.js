@@ -19,6 +19,9 @@ module.exports = function (app) {
 
   app.get("/api/card/me", [authService.verifyToken], cardController.getMyCard)
 
+  //deleteFromCard
+  app.delete("/api/card/delete/:id", [authService.verifyToken], cardController.deleteFromCard)
+
   app.post(
     "/api/orders/create",
     [
