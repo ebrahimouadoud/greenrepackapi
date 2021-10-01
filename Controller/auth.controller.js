@@ -100,9 +100,9 @@ exports.signin = (req, res) => {
         return res.status(404).send({ message: "User Not found." });
       }
       if (user.status == "Pending") {
-        return res.status(400).send({ message: "User Not Actived. Please Confirme your account " });
+        return res.status(401).send({ message: "Adresse mail non vérifiée." });
       } else if (user.status == "Blocked") {
-        return res.status(400).send({ message: "User Blocked. Please Contact Admin " });
+        return res.status(401).send({ message: "Votre compte est désactivé " });
       } else {
         var passwordIsValid = bcrypt.compareSync(
           req.body.password,

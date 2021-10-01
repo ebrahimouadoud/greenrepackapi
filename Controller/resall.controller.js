@@ -4,9 +4,38 @@ const Produit = db.produit
 const Resall = db.revente;
 const User = db.user;
 const Modele = db.modele 
+const priceCase = db.PriceCase
+const prodType = db.type
 
 function randomIntFromInterval(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+exports.makeProposal = (req, res) => {
+  //
+  Resall.findOne({
+    where: {
+      id: req.params.id,
+    },
+    include: [
+        {
+          model: User
+        }
+      ]
+  })
+    .then((resall) => {
+      if (!resall) {
+        return res.status(404).send({ message: 'Resall Not Found.' })
+      }
+      resall.prixPropose = req.body.prixPropose
+      resall.save()
+      nodemailer.notifyProposal(
+        resall.user.firstname,
+        resall.user.lastname,
+        resall.user.email,
+      );
+      return res.status(200).send({ message: 'Resalle updated.' })
+    })
 }
 
 // POST >> Create Resall (Revente)
@@ -20,40 +49,54 @@ exports.createResall = (req, res) => {
         where: { id: req.userId },
       })
         .then((user) => {
-          // console.log(user.username)
           if (_modele) {
-            try {
-
-              Produit.create({
-                name: _modele.name + ' de ' + user.username,
-                description: req.body.description,
-                couleur: req.body.color,
-                age: req.body.age,
-                state: req.body.state,
-                modeleId: _modele.id,
-                userId: req.userId,
-              }).then((produit) => {
-                const ProposalPrice = randomIntFromInterval(900, 80)
-                try {
-                  db.revente
-                    .create({
-                      prixPropose: ProposalPrice,
-                      etat: 'En Attendant',
-                      produitId: produit.id,
-                      userId: req.userId,
-                    })
-                    .then((revente) => {
-                      return res.status(200).json({
-                        revente: revente,
-                      })
-                    })
-                } catch (error) {
-                  return res.status(500).json({ error: error.message })
+            priceCase.findOne({
+              where:{ modelId: _modele.number, state: req.body.state }
+            }).then( _pc => {
+                var ProposalPrice = null
+                if( _pc ){
+                  ProposalPrice = _pc.price 
                 }
-              })
-            } catch (error) {
-              return res.status(500).json({ error: error.message })
-            }
+                try {
+
+                Produit.create({
+                  name: _modele.name + ' de ' + user.username,
+                  description: req.body.description,
+                  couleur: req.body.color,
+                  age: req.body.age,
+                  state: req.body.state,
+                  modeleId: _modele.id,
+                  userId: req.userId,
+                }).then((produit) => {
+                  
+                  try {
+                    db.revente
+                      .create({
+                        prixPropose: ProposalPrice,
+                        etat: 'En Attendant',
+                        produitId: produit.id,
+                        userId: req.userId,
+                      })
+                      .then((revente) => {
+                        if(ProposalPrice){
+                          return res.status(200).json({
+                            revente: revente,
+                          })
+                        }else{
+                          return res.status(201).json({
+                            revente: revente,
+                          })
+                        }
+                        
+                      })
+                  } catch (error) {
+                    return res.status(500).json({ error: error.message })
+                  }
+                })
+              } catch (error) {
+                return res.status(500).json({ error: error.message })
+              }
+            })
           } else {
             return res.status(404).json({ message: 'modele not found' })
           }
@@ -68,8 +111,7 @@ exports.aceptResall = (req, res) => {
     where: {
       id: req.params.id,
     },
-  })
-    .then((resall) => {
+  }).then((resall) => {
       if (!resall) {
         return res.status(404).send({ message: 'Resall Not Found.' })
       }
@@ -77,18 +119,23 @@ exports.aceptResall = (req, res) => {
         return res.status(401).send({ message: 'manage only your own sales please.' })
       }
       if (resall.etat == 'Accepté') {
-        return res.status(500).send({
+        return res.status(400).send({
           message: 'Resall Has Already been Accepted',
         })
         //Validé
       }
       if (resall.etat == 'Validé') {
-        return res.status(500).send({
+        return res.status(400).send({
           message: 'Resall Has Been Validate',
         })
       }
+      if ( !resall.prixPropose ) {
+        return res.status(400).send({
+          message: 'No proposal.',
+        })
+      }
       if (resall.etat == 'Refusé') {
-        return res.status(500).send({
+        return res.status(400).send({
           message: 'Resall Has Been Refused',
         })
       } else if (resall.etat == 'En Attendant') {
@@ -248,8 +295,11 @@ exports.getAllResall = (req, res) => {
             include:
               [
                 {
-                  model: Produit, include: [{ model: Modele  }] 
+                  model: Produit, include: [{ model: Modele, include: [ { model: prodType }]  }] 
                 },
+                {
+                  model: User
+                }
               ]
           })
                 .then(revente => {

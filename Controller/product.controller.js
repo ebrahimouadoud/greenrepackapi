@@ -9,6 +9,7 @@ const Resall = db.revente
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const twl_client = require('twilio')(accountSid, authToken);
+const prodType = db.type
 
 exports.getAllProducts = (req, res) => {
     User.findByPk(req.userId).then(user => {
@@ -21,8 +22,8 @@ exports.getAllProducts = (req, res) => {
                     where: {phase:'En vente'},
                     include:
                         [
-                            { model: User, attributes: ['username', 'email'] },
-                            { model: Modele, attributes: ['name', 'number'], include: [{ model: Brand, attributes: ['name'] }] },
+                            { model: User },
+                            { model: Modele, include: [{ model: prodType }] },
                         ]
                 })
                     .then(products => {
@@ -47,7 +48,7 @@ exports.getAllProducts = (req, res) => {
                                 model: Resall
                             },
                             { model: User, attributes: ['username', 'email'] },
-                            { model: Modele, attributes: ['name', 'number'], include: [{ model: Brand, attributes: ['name'] }] },
+                            { model: Modele, include: [{ model: prodType }] },
                         ]
                 })
                     .then(products => {

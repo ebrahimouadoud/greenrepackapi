@@ -383,6 +383,16 @@ module.exports.sendNewPassword = (Username, Email, Password) => {
 
 }
 
+module.exports.notifyProposal = ( firstname, lastname, email ) => {
+    transport.sendMail({
+        from: '<Green Repack>',
+        to: email,
+        subject: `Vous avez une proposition.`,
+        html: ` 
+        <h2>Bonjour ${firstname}</h2>
+        <p>  Vous avez reçu une proposition sur votre revente, vous pouvez vous connecter et accepter/refuser la proposition. `,
+    }).catch(err => console.log(err));
+}
 
 module.exports.sendAcceptResall = (username, firstname, lastname, email) => {
     transport.sendMail({
