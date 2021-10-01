@@ -1,6 +1,6 @@
 const db = require("../models");
 
-const priceCase = db.priceCase;
+const priceCase = db.PriceCase;
 
 module.exports = {
     seedpriceCases : function () {        

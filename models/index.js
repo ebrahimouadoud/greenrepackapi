@@ -42,7 +42,7 @@ db.inscriptionAssociation = require("../models/insciptionAssociation.model")(seq
 db.card = require("./card.model")(sequelize, Sequelize);
 db.productsCard = require("./products_card.model")(sequelize, Sequelize);
 db.command = require("./command.model")(sequelize, Sequelize);
-
+db.PriceCase = require('./pricecases.model')(sequelize, Sequelize);
 db.role.belongsToMany(db.user, {
   through: "user_roles",
   as: "users",
