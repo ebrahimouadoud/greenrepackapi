@@ -2,7 +2,7 @@ const db = require("../models");
 const Depot = db.depot;
 const User = db.user;
 const axios = require('axios')
-
+const google_api_key = process.env.google_api_key
 // Get All Depot
 exports.getAllDepots = (req, res) => {
 
@@ -54,7 +54,7 @@ exports.getNearWarehouse = (req, res)=>{
                     var config = {
                         method: 'get',
                         url: 'https://maps.googleapis.com/maps/api/distancematrix/json?origins='+ sansAccents(user.adresse)
-                          +'&destinations='+ sansAccents(depots[index].adresse ) +'&mode=DRIVING&language=fr-FR&key=AIzaSyAsbHMcQvhfDu38LBkeZi-EGDeAviU_gDo',
+                          +'&destinations='+ sansAccents(depots[index].adresse ) +'&mode=DRIVING&language=fr-FR&key=' + google_api_key,
                         headers: { }
                       };
                     axios(config)
