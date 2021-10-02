@@ -52,6 +52,14 @@ exports.getUserById = (req, res) => {
         });
 };
 
+exports.setAdresse = (req, res) => {
+    db.user.findOne({ where : { id : req.userId } }).then( user => {
+      user.adresse = req.body.adresse;
+      user.save()
+      res.send("updated")
+    })
+}
+
 exports.getMyBalance = (req, res ) => {
     db.user.findOne({
         where: {

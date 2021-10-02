@@ -56,6 +56,12 @@ module.exports = function(app) {
     usermanagerController.toggleActivation
   );
 
+  app.put(
+    "/api/setadress",
+    [authService.verifyToken], 
+    usermanagerController.setAdresse
+  );
+
   app.delete(
     "/api/user/:id",
     [authService.verifyToken, authService.isAdmin],
