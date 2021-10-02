@@ -67,6 +67,7 @@ exports.createResall = (req, res) => {
                   state: req.body.state,
                   modeleId: _modele.id,
                   userId: req.userId,
+                  entrepotId: req.body.localisation
                 }).then((produit) => {
                   
                   try {

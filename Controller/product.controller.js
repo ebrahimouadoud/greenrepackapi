@@ -10,6 +10,7 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const twl_client = require('twilio')(accountSid, authToken);
 const prodType = db.type
+const Depot = db.depot
 
 exports.getAllProducts = (req, res) => {
     User.findByPk(req.userId).then(user => {
@@ -47,6 +48,7 @@ exports.getAllProducts = (req, res) => {
                             { 
                                 model: Resall
                             },
+                            { model: Depot },
                             { model: User, attributes: ['username', 'email'] },
                             { model: Modele, include: [{ model: prodType }] },
                         ]

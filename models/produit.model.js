@@ -38,6 +38,9 @@ module.exports = (sequelize, Sequelize) => {
         prix_vente: {
             type: Sequelize.INTEGER,
             defaultValue: null
+        },
+        entrepotId:{
+            type: Sequelize.INTEGER
         }
     });
 

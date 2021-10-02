@@ -21,6 +21,14 @@ module.exports = function (app) {
     ], 
     depotController.getAllDepots
   );
+  //getNearWarehouse
+  app.get(
+    "/api/warehouses/getnear",
+    [
+      authService.verifyToken
+    ], 
+    depotController.getNearWarehouse
+  );
 
   app.post(
     "/api/warehouses/new",

@@ -81,6 +81,8 @@ db.modele.belongsTo(db.type, { foreignKey: 'typeId' });
 db.modele.belongsTo(db.user);
 db.user.hasMany(db.modele);
 db.user.hasMany(db.produit);
+db.produit.belongsTo(db.depot, { foreignKey: 'entrepotId' });
+db.depot.hasMany(db.produit);
 
 db.user.hasMany(db.contreOffre);
 db.user.hasMany(db.command);
