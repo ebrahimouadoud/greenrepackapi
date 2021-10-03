@@ -11,6 +11,7 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 const twl_client = require('twilio')(accountSid, authToken);
 const prodType = db.type
 const Depot = db.depot
+const Op = db.Sequelize.Op;
 
 exports.getAllProducts = (req, res) => {
     User.findByPk(req.userId).then(user => {
@@ -37,7 +38,20 @@ exports.getAllProducts = (req, res) => {
                     });
             }
             else if (roles[0].name === "admin" || roles[0].name === "manager") {
-                const wheres = {};
+                const wheres = {
+                        name: { [Op.ne]: null },
+                        phase: { [Op.ne]: null },
+                        '$modele.type.id$' : req.query.type ? parseInt(req.query.type) : { [Op.ne]: null },
+                    }
+                if(req.query.titre){
+                    wheres.name= { [Op.like]: '%' + req.query.titre + '%' }
+                }
+                if(req.query.phase){
+                    wheres.phase= req.query.phase
+                }
+                if(req.query.warehouse){
+                    wheres.entrepotId = req.query.warehouse
+                }
                 Product.findAll({
                     where: wheres,
                     order: [
@@ -50,7 +64,7 @@ exports.getAllProducts = (req, res) => {
                             },
                             { model: Depot },
                             { model: User, attributes: ['username', 'email'] },
-                            { model: Modele, include: [{ model: prodType }] },
+                            { model: Modele, as: 'modele', include: [{ model: prodType, as: 'type' }] },
                         ]
                 })
                     .then(products => {
