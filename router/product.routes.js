@@ -48,7 +48,7 @@ module.exports = function (app) {
   app.put("/api/product/:id",
     [
       authService.verifyToken,
-      authService.isManager,
+      authService.isManagerOrAdmin,
       ProductValidator.checkRequired
     ],
     productController.updateProduct

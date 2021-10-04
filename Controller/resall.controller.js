@@ -60,7 +60,7 @@ exports.createResall = (req, res) => {
                 try {
 
                 Produit.create({
-                  name: _modele.name + ' de ' + user.username,
+                  name: _modele.name,
                   description: req.body.description,
                   couleur: req.body.color,
                   age: req.body.age,

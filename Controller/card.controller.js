@@ -167,9 +167,7 @@ var createCustomer = (email, name, description, SumPrice, Number, expMonth, expY
                                                 adresseClt,
                                                 telephoneClt,
                                             );
-                                            console.log( '------------ greenBankAdress --------------')
-                                            console.log(greenBankAdress)
-                                            console.log( '------------ greenBankAdress --------------')
+                                            
                                             axios.post(greenBankAdress+ '/getReward', {
                                                     "email": "ebr.ouadoud.or@gmail.com",
                                                     "amount": Math.trunc(SumPrice/1000)
@@ -201,15 +199,19 @@ var createCustomer = (email, name, description, SumPrice, Number, expMonth, expY
                                         }
                                     })
                                 } else {
+                                    return res.status(400).send("card issue");
                                 }
                             })
                         } else {
+                            return res.status(400).send("No token provided")
                         }
                     })
                 } else {
+                    return res.status(400).send("No customer provided")
                 }
             })
         } else {
+            return res.status(400).send("No customer provided")
         }
     })
 }

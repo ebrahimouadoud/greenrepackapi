@@ -223,12 +223,11 @@ exports.updateProduct = (req, res) => {
             return res.status(404).send({ message: 'Product Not Found.' })
         }
         produit.update({
+            name: req.body.name,
             description: req.body.description,
             couleur: req.body.couleur,
             age: req.body.age,
             state: req.body.state,
-            modeleId: req.body.modeleId,
-            userId: req.body.userId,
             prix_vente: req.body.prix_vente
         }).then((result) => {
             return res.status(200).json({
