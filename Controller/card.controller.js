@@ -125,7 +125,6 @@ var createCustomer = (email, name, description, SumPrice, Number, expMonth, expY
             //Retrieve Customer
             stripe.customers.retrieve(customer.id, (err, customer) => {
                 if (err) {
-                    return res.status(400).send({ err: err });
                 } if (customer) {
                     //Create Token
                     var param = {};
@@ -137,7 +136,6 @@ var createCustomer = (email, name, description, SumPrice, Number, expMonth, expY
                     }
                     stripe.tokens.create(param, (err, token) => {
                         if (err) {
-                            return res.status(500).send({ err: err });
                         } if (token) {
                             //add Card To Customer
                             stripe.customers.createSource(customer.id, { source: token.id }, (err, card) => {
@@ -157,23 +155,18 @@ var createCustomer = (email, name, description, SumPrice, Number, expMonth, expY
                                         } if (charge) {
                                             next();
                                         } else {
-                                            return res.status(400).send("Something wrong in Create Charge");
                                         }
                                     })
                                 } else {
-                                    return res.status(400).send("Something wrong in Create Source");
                                 }
                             })
                         } else {
-                            return res.status(400).send("Something wrong in Create Token");
                         }
                     })
                 } else {
-                    return res.status(400).send("Something wrong in Customer Retrieve");
                 }
             })
         } else {
-            return res.status(400).send("Something wrong in Create Customer");
         }
     })
 }

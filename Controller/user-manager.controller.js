@@ -2,10 +2,30 @@ const authService = require("../authmiddelwares/AuthService");
 const User = require("../models/user.model")
 const Role = require("../models/role.model")
 const db = require("../models")
-const http = require('http');
 var bcrypt = require("bcryptjs");
+const axios = require('axios')
 const Op = db.Sequelize.Op;
 const greenBankAdress = process.env.greenBankAdress;
+const google_api_key = process.env.google_api_key
+
+function sansAccents(str){
+    var accent = [
+        /[\300-\306]/g, /[\340-\346]/g, // A, a
+        /[\310-\313]/g, /[\350-\353]/g, // E, e
+        /[\314-\317]/g, /[\354-\357]/g, // I, i
+        /[\322-\330]/g, /[\362-\370]/g, // O, o
+        /[\331-\334]/g, /[\371-\374]/g, // U, u
+        /[\321]/g, /[\361]/g, // N, n
+        /[\307]/g, /[\347]/g, // C, c
+    ];
+    var noaccent = ['A','a','E','e','I','i','O','o','U','u','N','n','C','c'];
+    
+    for(var i = 0; i < accent.length; i++){
+        str = str.replace(accent[i], noaccent[i]);
+    }
+    
+    return str;
+}
 
 exports.getAllUsers = (req, res) => {
         let _ppages = req.query.ppage ? parseInt(req.query.ppage ) : 5
@@ -30,6 +50,20 @@ exports.getAllUsers = (req, res) => {
             return res.status(500).send({ message: err.message });
         });
     
+}
+
+exports.checkAdress = (req, res) => {
+    console.log( ' eq.query.adresse  ', req.query.adresse )
+    axios.get("https://maps.googleapis.com/maps/api/geocode/json?address=" + sansAccents(req.query.adresse) + "&key=" + google_api_key)
+                    .then( result => {
+                        if(result.data.results){
+                            if(result.data.results[0].formatted_address){
+                                return res.status(200).send(result.data.results[0].formatted_address);
+                            }
+                        }
+                    }, err => {
+                        return res.status(500).send({ err });
+                    } )
 }
 
 exports.getUserById = (req, res) => {
@@ -66,21 +100,10 @@ exports.getMyBalance = (req, res ) => {
             id: req.userId
         }
     }).then(user => {
-        http.get(greenBankAdress+'/mybalace?email=' + user.email , (resp) => {
-            let data = '';
-            resp.on('data', (chunk) => {
-            data += chunk;
-            });
-            resp.on('end', () => {
-            if (resp.statusCode == 200) {
-                var repdata = JSON.parse(data)
-                return res.status(200).json( { balance: repdata.balance } )
-            }
-        });
-
-    }).on("error", (err) => {
-        return res.status(500).json({ error: err.message })
-    });
+        axios.get(greenBankAdress+'/mybalace?email=' + user.email)
+            .then( result => {
+                return res.status(200).json( { balance: result.data.balance } )
+            })
     })
 }
 
