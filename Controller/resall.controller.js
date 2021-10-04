@@ -6,7 +6,7 @@ const User = db.user;
 const Modele = db.modele 
 const priceCase = db.PriceCase
 const prodType = db.type
-
+const Op = db.Sequelize.Op;
 function randomIntFromInterval(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min)
 }
@@ -288,18 +288,22 @@ exports.getAllResall = (req, res) => {
                 });
         }
         else if (roles[0].name === "admin" || roles[0].name === "manager") {
-
+          const wheres = {
+              etat: req.query.etat ? req.query.etat : { [Op.ne]: null } ,
+              '$user.email$' : req.query.usermail ? {[Op.like]: '%' + req.query.usermail + '%'} : { [Op.ne]: null },
+          }
           Resall.findAll({
             order: [
               ['createdAt', 'DESC'],
             ],
+            where : wheres,
             include:
               [
                 {
                   model: Produit, include: [{ model: Modele, include: [ { model: prodType }]  }] 
                 },
                 {
-                  model: User
+                  model: User, as: 'user'
                 }
               ]
           })

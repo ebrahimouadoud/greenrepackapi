@@ -17,11 +17,19 @@ exports.getAllProducts = (req, res) => {
     User.findByPk(req.userId).then(user => {
         user.getRoles().then(roles => {
             if (roles[0].name === "user" ) {
+                const wheres = {
+                    phase:'En vente',
+                    name: { [Op.ne]: null },
+                    '$modele.type.id$' : req.query.type ? parseInt(req.query.type) : { [Op.ne]: null },
+                }
+                if(req.query.titre){
+                    wheres.name= { [Op.like]: '%' + req.query.titre + '%' }
+                }
                 Product.findAll({
                     order: [
                         ['createdAt', 'DESC'],
                     ],
-                    where: {phase:'En vente'},
+                    where: wheres,
                     include:
                         [
                             { model: User },
