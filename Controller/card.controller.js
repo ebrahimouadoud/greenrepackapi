@@ -111,7 +111,8 @@ exports.addToCard = (req, res) => {
 
 // STRIPE - Create New Customer
 
-var createCustomer = (email, name, description, SumPrice, Number, expMonth, expYear, Cvc, res, next) => {
+var createCustomer = (email, name, description, SumPrice, Number, expMonth, expYear, Cvc, res, next,
+     _card, RnId, nameProduitFacture, adresseClt, telephoneClt) => {
     var param = {};
     param.email = email;
     param.name = name;
@@ -125,6 +126,7 @@ var createCustomer = (email, name, description, SumPrice, Number, expMonth, expY
             //Retrieve Customer
             stripe.customers.retrieve(customer.id, (err, customer) => {
                 if (err) {
+                    return res.status(400).send({ err: err });
                 } if (customer) {
                     //Create Token
                     var param = {};
@@ -136,6 +138,7 @@ var createCustomer = (email, name, description, SumPrice, Number, expMonth, expY
                     }
                     stripe.tokens.create(param, (err, token) => {
                         if (err) {
+                            return res.status(500).send({ err: err });
                         } if (token) {
                             //add Card To Customer
                             stripe.customers.createSource(customer.id, { source: token.id }, (err, card) => {
@@ -152,9 +155,49 @@ var createCustomer = (email, name, description, SumPrice, Number, expMonth, expY
                                     stripe.charges.create(param, (err, charge) => {
                                         if (err) {
                                             return res.status(400).send({ err: err });
-                                        } if (charge) {
-                                            next();
+                                        } else if (charge) {
+                                            console.log(' --------------- good next ---------------')
+                                            nodemailer.sendFacture(
+                                                name,
+                                                email,
+                                                RnId,
+                                                nameProduitFacture,
+                                                SumPrice,
+                                                new Date('YYYY/MM/DD HH:m').toString(),
+                                                adresseClt,
+                                                telephoneClt,
+                                            );
+                                            console.log( '------------ greenBankAdress --------------')
+                                            console.log(greenBankAdress)
+                                            console.log( '------------ greenBankAdress --------------')
+                                            axios.post(greenBankAdress+ '/getReward', {
+                                                    "email": "ebr.ouadoud.or@gmail.com",
+                                                    "amount": Math.trunc(SumPrice/1000)
+                                                })
+                                            
+                                                const Len = _card.rows[0].produits.length;
+                                                for (var i = 0; i < Len; i++) {
+                                                    Product.findAll({
+                                                        where: { id: _card.rows[0].produits[i].dataValues.id },
+                                                    }).then(async resultat => {
+                                                        try {
+                                                            resultat[0].phase = 'Vendu';
+                                                            resultat[0].save();
+                                                            // console.log(_card.rows[0].id);
+                                                            Card.destroy({
+                                                                where: { id: _card.rows[0].id }
+                                                            }).then(FinalResult => {
+                            
+                                                            })
+                            
+                                                        } catch (error) {
+                                                            return res.status(500).send({ message: error })
+                                                        }
+                                                    })
+                                                }
+                                                return res.status(200).send("Commande enregistrée.")
                                         } else {
+                                            return res.status(400).send("Something wrong in Create Charge");
                                         }
                                     })
                                 } else {
@@ -263,50 +306,11 @@ exports.CreateOrder = (req, res, next) => {
                         Cvc = req.body.cvc;
                     SumPrice = Math.round(SumPrice * 100); // gives .00
 
-                    createCustomer(email, name, description, SumPrice, Number, expMonth, expYear, Cvc, res, next);
+                    createCustomer(email, name, description, SumPrice, Number, expMonth,
+                        expYear, Cvc, res, next, _card, RnId, nameProduitFacture, adresseClt, telephoneClt);
 
-                    nodemailer.sendFacture(
-                        name,
-                        email,
-                        RnId,
-                        nameProduitFacture,
-                        totalFacture,
-                        dateCreation,
-                        adresseClt,
-                        telephoneClt,
-                    );
-                    console.log( '--------------------------')
-                    console.log(greenBankAdress)
-                    axios.post(greenBankAdress+ '/getReward', {
-                            "email": "ebr.ouadoud.or@gmail.com",
-                            "amount": Math.trunc(SumPrice/1000)
-                        })
                         
 
-                }).then(result => {
-                    const Len = _card.rows[0].produits.length;
-                    for (var i = 0; i < Len; i++) {
-                        Product.findAll({
-                            where: { id: _card.rows[0].produits[i].dataValues.id },
-                        }).then(async resultat => {
-                            try {
-                                resultat[0].phase = 'Vendu';
-                                resultat[0].save();
-                                // console.log(_card.rows[0].id);
-                                Card.destroy({
-                                    where: { id: _card.rows[0].id }
-                                }).then(FinalResult => {
-
-                                })
-
-                            } catch (error) {
-                                return res.status(500).send({ message: error })
-                            }
-                        })
-                    }
-                    return res.status(200).send({
-                        message: "Success"
-                    });
                 })
         })
     })
