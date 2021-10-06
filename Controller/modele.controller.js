@@ -1,5 +1,7 @@
 const { modele } = require("../models");
 const db = require("../models");
+const Op = db.Sequelize.Op;
+const Type = db.type
 
 
 // Get All Modeled
@@ -8,9 +10,10 @@ exports.getAllModeles = (req, res) => {
     db.modele.findAll(
         {
             where :{
-                brandId: parseInt(req.query.brandId ), 
-                typeId: parseInt(req.query.typeId )
-            }
+                brandId: req.query.brandId ? parseInt(req.query.brandId ) : { [Op.ne]: null }, 
+                typeId: req.query.typeId ? parseInt(req.query.typeId ) : { [Op.ne]: null }
+            },
+            include: [ { model : db.type }, { model : db.brand } ]
         })
         .then(modeles => {
             res.status(200).send({

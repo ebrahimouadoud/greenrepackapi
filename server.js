@@ -5,6 +5,9 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const db = require("./models");
 const DBseeder = require('./database/seeder')
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const twl_client = require('twilio')(accountSid, authToken);
 
 // config app
 const app = express();
@@ -14,13 +17,12 @@ app.use(bodyParser.urlencoded({limit: '10mb', extended: true}));
 app.use(cors());
 
 //
-  db.sequelize.sync({force: true}).then(() => {
-      console.log('DATABASE SYNC');
-      DBseeder.seedBase();
-  });
-
-
-app.listen(3000, () => { 
+    /*db.sequelize.sync({force: true}).then(() => {
+        console.log('DATABASE SYNC');
+        DBseeder.seedBase();
+    });*/
+  //db.sequelize.sync()
+app.listen(443, () => { 
     //logger.info( 'Server listening' )
     console.log(' SERVER LESTENING ')
 } )
