@@ -8,7 +8,7 @@ const greenBankAdress = process.env.greenBankAdress;
 // POST >> Create Project (Association)
 exports.createProject = (req, res) => {
   db.association.findOne(
-    { Where: { userId: req.userId } }
+    { where: { userId: req.userId } }
   ).then(asso => {
     ProjetAssociative.create({
       name: req.body.name,
@@ -33,20 +33,41 @@ exports.createProject = (req, res) => {
 
 // GET >> Get All Project (Association)
 exports.allProjects = (req, res) => {
-  ProjetAssociative.findAll({
-    include: {
-      model: Association,
-      attributes: ['name']
-    }
+  User.findByPk(req.userId).then(user => {
+    user.getRoles().then(roles => {
+      if (roles[0].name === "association" ) {
+        Association.findOne( {where: {userId: req.userId}})
+          .then(asso => {
+            ProjetAssociative.findAll({
+              where: {associationId: asso.id}, 
+              include: {
+                model: Association,
+                attributes: ['name']
+              }
+            })
+              .then(projects => {
+                res.status(200).send({
+                  "Projects": projects
+                });
+              })
+          } )
+        
+      }else if(roles[0].name === "admin" || roles[0].name === "manager"){
+        ProjetAssociative.findAll({
+          include: {
+            model: Association,
+            attributes: ['name']
+          }
+        })
+          .then(projects => {
+            res.status(200).send({
+              "Projects": projects
+            });
+          })
+      }
+    }) 
   })
-    .then(projects => {
-      res.status(200).send({
-        "Projects": projects
-      });
-    })
-    .catch(err => {
-      return res.status(400).send({ message: err.message });
-    });
+
 }
 
 // GET >> Count Waiting Project (Association)
