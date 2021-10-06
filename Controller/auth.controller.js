@@ -33,7 +33,6 @@ exports.signup = (req, res) => {
           user.email,
           user.confirmationCode
         );
-        res.redirect("/");
       });
     })
     .catch(err => {
@@ -194,21 +193,26 @@ exports.getUserByToken = (req, res) => {
     }
     User.findOne({ where : { id : decoded.id } }).then( user => {
       var authorities = [];
-      user.getRoles().then(roles => {
-        for (let i = 0; i < roles.length; i++) {
-          authorities.push("ROLE_" + roles[i].name.toUpperCase());
-        }
-        return res.status(200).send({
-          id: user.id,
-          lastname: user.lastname,
-          firstname: user.firstname,
-          username: user.username,
-          email: user.email,
-          roles: authorities,
-          password: user.password,
-          adresse: user.adresse,
+      if(user){
+        user.getRoles().then(roles => {
+          for (let i = 0; i < roles.length; i++) {
+            authorities.push("ROLE_" + roles[i].name.toUpperCase());
+          }
+          return res.status(200).send({
+            id: user.id,
+            lastname: user.lastname,
+            firstname: user.firstname,
+            username: user.username,
+            email: user.email,
+            roles: authorities,
+            password: user.password,
+            adresse: user.adresse,
+          });
         });
-      });
+      }else{
+        return res.status(200).send('NOT FOUND')
+      }
+      
       
     })
     
