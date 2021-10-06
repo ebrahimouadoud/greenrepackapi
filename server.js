@@ -22,7 +22,7 @@ app.use(cors());
         DBseeder.seedBase();
     });*/
   //db.sequelize.sync()
-app.listen(443, () => { 
+app.listen(3000, () => { 
     //logger.info( 'Server listening' )
     console.log(' SERVER LESTENING ')
 } )
