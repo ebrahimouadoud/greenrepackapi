@@ -169,7 +169,7 @@ var createCustomer = (email, name, description, SumPrice, Number, expMonth, expY
                                             );
                                             
                                             axios.post(greenBankAdress+ '/getReward', {
-                                                    "email": "ebr.ouadoud.or@gmail.com",
+                                                    "email": email,
                                                     "amount": Math.trunc(SumPrice/1000)
                                                 })
                                             
