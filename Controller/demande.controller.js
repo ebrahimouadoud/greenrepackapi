@@ -58,7 +58,7 @@ exports.refuseDemande = (req, res) => {
       id: req.params.id
     }
   }).then(demande => {
-    if (demande.status == "En Attendant") {
+    if (demande.status == "En attente") {
       ns = "Refusé"
     }else{
       return res.status(400).json({
@@ -92,7 +92,7 @@ exports.acceptDemande = (req, res) => {
       return res.status(404).send({ message: "Not found." });
     }
     let ns = "Validé"
-    if (demande.status == "En Attendant") {
+    if (demande.status == "En attente") {
       ns = "Validé"
     }else{
       return res.status(400).json({
@@ -165,7 +165,7 @@ exports.getAllDemandes = (req, res) => {
 // GET >> Count Waiting Demande (Association)
 exports.pendingDemandeCount = (req, res) => {
   db.inscriptionAssociation.findAndCountAll({
-    where: { status: 'En Attendant' }
+    where: { status: 'En attente' }
   })
     .then(demandes => {
       res.status(200).send({
@@ -180,7 +180,7 @@ exports.pendingDemandeCount = (req, res) => {
 // GET >> Waiting Demande (Association)
 exports.pendingDemande = (req, res) => {
   db.inscriptionAssociation.findAndCountAll({
-    where: { status: 'En Attendant' }
+    where: { status: 'En attente' }
   })
     .then(demandes => {
       res.status(200).send({

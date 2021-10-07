@@ -32,8 +32,8 @@ module.exports = (sequelize, Sequelize) => {
         },
         phase: {
             type: Sequelize.ENUM,
-            values: ['En Attend', 'Reçu', 'Renvoyé', 'En vente', 'Vendu'],
-            defaultValue: 'En Attend',
+            values: ['En attente', 'Reçu', 'Renvoyé', 'En vente', 'Vendu'],
+            defaultValue: 'En attente',
         },
         prix_vente: {
             type: Sequelize.INTEGER,

@@ -6,7 +6,7 @@ const google_api_key = process.env.google_api_key
 // Get All Depot
 exports.getAllDepots = (req, res) => {
 
-    Depot.findAll()
+    Depot.findAll( { include: [db.produit] } )
         .then(depots => {
             res.status(200).send({
                 rows: depots
@@ -79,14 +79,13 @@ exports.getNearWarehouse = (req, res)=>{
 
 // Post New Depot
 exports.createDepot = (req, res) => {
-
+    console.log( ' ::: req.body ::: ', req.body)
     try {
         Depot.create(
             {
                 name: req.body.name,
-                disponibilite: req.body.disponibilite,
-                adresseId: req.body.adresseId,
-                userId: req.body.userId,
+                disponibilite: 'Disponible',
+                adresse: req.body.adresse
             }).then(depots => {
                 return res.status(201).json({
                     "Warehouses": depots

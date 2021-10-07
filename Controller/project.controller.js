@@ -73,7 +73,7 @@ exports.allProjects = (req, res) => {
 // GET >> Count Waiting Project (Association)
 exports.pendingProjectsCount = (req, res) => {
   ProjetAssociative.findAndCountAll({
-    where: { status: 'En Attendant' },
+    where: { status: 'En attente' },
     include: {
       model: Association,
       attributes: ['name']
@@ -91,7 +91,7 @@ exports.pendingProjectsCount = (req, res) => {
 
 exports.pendingProjects = (req, res) => {
   ProjetAssociative.findAndCountAll({
-    where: { status: 'En Attendant' },
+    where: { status: 'En attente' },
     include: {
       model: Association,
       attributes: ['name']

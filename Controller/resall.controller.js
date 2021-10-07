@@ -56,7 +56,7 @@ exports.createResall = (req, res) => {
         db.revente
           .create({
             prixPropose: null,
-            etat: 'En Attendant',
+            etat: 'En attente',
             produitId: produit.id,
             userId: req.userId,
           })
@@ -105,7 +105,7 @@ exports.createResall = (req, res) => {
                     db.revente
                       .create({
                         prixPropose: ProposalPrice,
-                        etat: 'En Attendant',
+                        etat: 'En attente',
                         produitId: produit.id,
                         userId: req.userId,
                       })
@@ -171,7 +171,7 @@ exports.aceptResall = (req, res) => {
         return res.status(400).send({
           message: 'Resall Has Been Refused',
         })
-      } else if (resall.etat == 'En Attendant') {
+      } else if (resall.etat == 'En attente') {
         User.findOne({
           where: { id: req.userId },
           attributes: ['username', 'firstname', 'lastname', 'email']
@@ -231,7 +231,7 @@ exports.refuseResall = (req, res, next) => {
         })
 
 
-      } else if (resall.etat == 'En Attendant') {
+      } else if (resall.etat == 'En attente') {
         
         // Change la Phase de Produit (Renvoye)
         // Recuperation produit By Id
@@ -273,7 +273,7 @@ exports.validateResall = (req, res, next) => {
 
 
       }
-      if (resall.etat == 'Refusé' || resall.etat == 'En Attendant') {
+      if (resall.etat == 'Refusé' || resall.etat == 'En attente') {
         return res.status(500).send({
           message: 'Resall Has Been Pending Or Refused',
         })

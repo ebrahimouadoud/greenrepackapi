@@ -34,8 +34,7 @@ module.exports = function (app) {
     "/api/warehouses/new",
     [
       authService.verifyToken,
-      authService.isManagerOrAdmin,
-      DepotValidator.checkDuplicateDepotName
+      authService.isManagerOrAdmin
     ],
     
     depotController.createDepot

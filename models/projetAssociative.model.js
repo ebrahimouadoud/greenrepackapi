@@ -29,8 +29,8 @@ module.exports = (sequelize, Sequelize) => {
       },
       status: {
         type: Sequelize.ENUM,
-        values: ['En Attendant', 'Validé', 'Refusé', 'Prie En Charge'],
-        defaultValue: 'En Attendant'
+        values: ['En attente', 'Validé', 'Refusé', 'Prie En Charge'],
+        defaultValue: 'En attente'
       },
       associationId: {
         type: Sequelize.INTEGER

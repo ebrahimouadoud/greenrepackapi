@@ -104,7 +104,7 @@ exports.notiyArrival = (req, res) => {
             ]
     }).then((Produit) => {
         try {
-            if (Produit.phase == 'En Attend' || Produit.phase == 'Renvoyé') {
+            if (Produit.phase == 'En attente' || Produit.phase == 'Renvoyé') {
                 const Username = Produit.user.username;
                 const Email = Produit.user.email;
                 const ProductName = Produit.name;
@@ -177,7 +177,7 @@ exports.returnProduct = (req, res) => {
                 Produits.save();
                 return res.status(200).send({ message: 'Product Returned Successfully' });
             }
-            else if (Produits.phase == 'En Attend') {
+            else if (Produits.phase == 'En attente') {
                 return res.status(400).send({ message: 'Product is Not yet Received' });
             }
             else if (Produits.phase == 'Renvoyé') {
@@ -210,7 +210,7 @@ exports.saleProduct = (req, res) => {
                 Produits.save();
                 return res.status(200).send({ message: 'Product On sale phase Successfully' });
             }
-            else if (Produits.phase == 'En Attend') {
+            else if (Produits.phase == 'En attente') {
                 return res.status(400).send({ message: 'Product in waiting Phase' });
             }
             else if (Produits.phase == 'Renvoyé') {
