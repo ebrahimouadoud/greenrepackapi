@@ -20,6 +20,7 @@ module.exports = function (app) {
     "/api/prices/all",[authService.verifyToken], modeleController.getAllPriceCases
   );
   app.put("/api/prices/:id",[authService.verifyToken], modeleController.updatePrice)
+  app.post("/api/prices", [ authService.verifyToken, authService.isManagerOrAdmin ], modeleController.createPrice )
   app.post(
     "/api/model/new",
     [

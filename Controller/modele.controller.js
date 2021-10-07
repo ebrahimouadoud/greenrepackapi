@@ -27,7 +27,11 @@ exports.getAllModeles = (req, res) => {
 };
 
 exports.getAllPriceCases = (req, res) => {
-    PriceCase.findAll()
+    PriceCase.findAll({
+            order: [
+                ['createdAt', 'DESC'],
+            ]
+        })
         .then( cases => {
             res.status(200).send({
                 rows: cases
@@ -50,6 +54,18 @@ exports.updatePrice = (req, res) =>{
                         return res.status(200).send( _pricecase )
                     })
             }
+        } )
+}
+
+exports.createPrice = (req, res) =>{
+    
+    PriceCase.create( {
+        modelId: req.body.name,
+        state: req.body.state,
+        price: req.body.price
+    })
+        .then( pc => {
+            return res.status(200).send( pc )
         } )
 }
 
