@@ -9,7 +9,7 @@ const sequelize = new Sequelize(
     host: config.HOST,
     dialect: config.DIALECT,
     port: config.PORT,
-    logging: true,
+    logging: false,
     pool: {
       max: 5,
       min: 0,
