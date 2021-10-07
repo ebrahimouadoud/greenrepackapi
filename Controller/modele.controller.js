@@ -2,7 +2,7 @@ const { modele } = require("../models");
 const db = require("../models");
 const Op = db.Sequelize.Op;
 const Type = db.type
-
+const PriceCase =  db.PriceCase
 
 // Get All Modeled
 exports.getAllModeles = (req, res) => {
@@ -26,6 +26,32 @@ exports.getAllModeles = (req, res) => {
 
 };
 
+exports.getAllPriceCases = (req, res) => {
+    PriceCase.findAll()
+        .then( cases => {
+            res.status(200).send({
+                rows: cases
+            });
+        })
+        .catch(err => {
+            return res.status(500).send({ message: err.message });
+        });
+}
+
+exports.updatePrice = (req, res) =>{
+    const id = req.params.id;
+    PriceCase.findByPk(req.params.id)
+        .then( pc => {
+            if( ! pc){
+                return res.status(404).send("NOT FoUND");
+            }else{
+                pc.update(req.body)
+                    .then( _pricecase =>{
+                        return res.status(200).send( _pricecase )
+                    })
+            }
+        } )
+}
 
 // Post New Modele
 exports.createModele = (req, res) => {

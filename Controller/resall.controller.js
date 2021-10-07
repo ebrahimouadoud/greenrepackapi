@@ -40,7 +40,38 @@ exports.makeProposal = (req, res) => {
 
 // POST >> Create Resall (Revente)
 exports.createResall = (req, res) => {
-  db.modele
+  if(req.body.modeleId == "not found"){
+    Produit.create({
+      name: req.body.newModele,
+      description: req.body.description,
+      couleur: req.body.color,
+      age: req.body.age,
+      state: req.body.state,
+      modeleId: null,
+      userId: req.userId,
+      entrepotId: req.body.localisation
+    }).then((produit) => {
+      
+      try {
+        db.revente
+          .create({
+            prixPropose: null,
+            etat: 'En Attendant',
+            produitId: produit.id,
+            userId: req.userId,
+          })
+          .then((revente) => {
+              return res.status(201).json({
+                revente: revente,
+              })
+            
+          })
+      } catch (error) {
+        return res.status(500).json({ error: error.message })
+      }
+    })
+  }else{
+    db.modele
     .findOne({
       where: { id: req.body.modeleId },
     })
@@ -103,6 +134,7 @@ exports.createResall = (req, res) => {
           }
         })
     })
+  }
 }
 
 // PUT >> Accept Resall By Id (Revente)

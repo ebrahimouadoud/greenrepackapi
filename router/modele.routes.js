@@ -16,7 +16,10 @@ module.exports = function (app) {
   app.get(
     "/api/model/all",[authService.verifyToken], modeleController.getAllModeles
   );
-
+  app.get(
+    "/api/prices/all",[authService.verifyToken], modeleController.getAllPriceCases
+  );
+  app.put("/api/prices/:id",[authService.verifyToken], modeleController.updatePrice)
   app.post(
     "/api/model/new",
     [

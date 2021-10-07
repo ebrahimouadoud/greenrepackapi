@@ -14,19 +14,7 @@ module.exports = {
         });
         Type.create({
             id: 3,
-            name: "consule de jeux"
-        });
-        Type.create({
-            id: 4,
             name: "ordinateur portable"
-        });
-        Type.create({
-            id: 5,
-            name: "ordinateur"
-        });
-        Type.create({
-            id: 6,
-            name: "écrans"
         });
     }
 }

@@ -32,7 +32,7 @@ module.exports = function (app) {
   app.put("/api/product/return/:id",
     [
       authService.verifyToken,
-      authService.isManager
+      authService.isManagerOrAdmin
     ],
     productController.returnProduct
   );

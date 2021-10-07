@@ -46,11 +46,17 @@ exports.getAllProducts = (req, res) => {
                     });
             }
             else if (roles[0].name === "admin" || roles[0].name === "manager") {
-                const wheres = {
+                let wheres = {
+                        name: { [Op.ne]: null },
+                        phase: { [Op.ne]: null }
+                    }
+                if(req.query.type){
+                    wheres = {
                         name: { [Op.ne]: null },
                         phase: { [Op.ne]: null },
                         '$modele.type.id$' : req.query.type ? parseInt(req.query.type) : { [Op.ne]: null },
                     }
+                }
                 if(req.query.titre){
                     wheres.name= { [Op.like]: '%' + req.query.titre + '%' }
                 }
@@ -102,13 +108,12 @@ exports.notiyArrival = (req, res) => {
                 const Username = Produit.user.username;
                 const Email = Produit.user.email;
                 const ProductName = Produit.name;
-                const ModeleName = Produit.modele.name;
-                const BrandName = Produit.modele.brand.name;
+                const BrandName = Produit.modele ? Produit.modele.brand.name : null;
                 nodemailer.sendNotiyArrivalEmail(
                     Username,
                     Email,
-                    ProductName,
-                    ModeleName,
+                    Produit.name,
+                    Produit.name,
                     BrandName
                 );
                 Produit.phase = 'Reçu';
@@ -139,8 +144,8 @@ exports.returnProduct = (req, res) => {
     Product.findByPk(req.params.id, {
         include:
             [
-                { model: User, attributes: ['username', 'email'] },
-                { model: Modele, attributes: ['name', 'number'], include: [{ model: Brand, attributes: ['name'] }] },
+                { model: User},
+                { model: Modele , include: [{ model: Brand }] },
             ]
     }).then((Produits) => {
         if (!Produits) {
@@ -151,8 +156,8 @@ exports.returnProduct = (req, res) => {
                 const Username = Produits.user.username;
                 const Email = Produits.user.email;
                 const ProductName = Produits.name;
-                const ModeleName = Produits.modele.name;
-                const BrandName = Produits.modele.brand.name;
+                const ModeleName = Produits.modele ? Produits.modele.name : '' ;
+                const BrandName = Produits.modele ? Produits.modele.brand.name : '';
                 nodemailer.returnProductEmail(
                     Username,
                     Email,
@@ -160,6 +165,14 @@ exports.returnProduct = (req, res) => {
                     ModeleName,
                     BrandName
                 );
+                if(Produits.user.telephone){
+                    twl_client.messages
+                    .create({
+                        body: 'Votre produit : ' + Produits.name + '. est renvoyé. Numéro de suivi' + req.body.tracking ,
+                        from: '+16108398994',
+                        to: Produits.user.telephone
+                    })
+                }
                 Produits.phase = 'Renvoyé';
                 Produits.save();
                 return res.status(200).send({ message: 'Product Returned Successfully' });
