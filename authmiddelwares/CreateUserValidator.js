@@ -86,12 +86,6 @@ userCreateValidator = (req, res, next) => {
         });
         return;
     }
-    if (req.body.adresse === 'undefined' || !req.body.adresse) {
-        res.status(400).send({
-            message: "Adresse is required!"
-        });
-        return;
-    }
     if (req.body.role === 'undefined' || !req.body.role) {
         res.status(400).send({
             message: "role is required!"
