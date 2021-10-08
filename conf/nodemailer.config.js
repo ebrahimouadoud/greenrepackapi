@@ -1338,7 +1338,9 @@ body {
                                                                                     <td align="center" class="esd-block-text es-p5t es-p5b es-p40r es-m-p0r" esd-links-underline="none">
                                                                                         <p>Thank you for choosing <strong>Green Repack</strong>.</p>
                                                                                         <p><br></p>
-                                                                                        <p>Please confirm that <strong><a target="_blank" href="mailto:${email}" style="text-decoration: none;">${email}</a></strong>&nbsp;is your email address by clicking on the button below or use this link <a target="_blank" href="http://localhost:3000/api/auth/validate/${confirmationCode}" style="text-decoration: none; word-break: break-all;">https://greenrepack.com/confirm-email</a> within <strong>24 hours</strong>.</p>
+                                                                                        <p>Please confirm that <strong><a target="_blank" href="mailto:${email}" style="text-decoration: none;">${email}</a>
+                                                                                        </strong>&nbsp;is your email address by clicking on the button below or use this link <a target="_blank" 
+                                                                                            href="https://grmarket.herokuapp.com/#/token/verify/${confirmationCode}" style="text-decoration: none; word-break: break-all;">https://greenrepack.com/confirm-email</a> within <strong>24 hours</strong>.</p>
                                                                                     </td>
                                                                                 </tr>
                                                                                 <tr>
