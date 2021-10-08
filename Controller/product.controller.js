@@ -241,7 +241,8 @@ exports.updateProduct = (req, res) => {
             couleur: req.body.couleur,
             age: req.body.age,
             state: req.body.state,
-            prix_vente: req.body.prix_vente
+            prix_vente: req.body.prix_vente,
+            modeleId: req.body.modeleId
         }).then((result) => {
             return res.status(200).json({
                 message: "Product Updated Successfully",
