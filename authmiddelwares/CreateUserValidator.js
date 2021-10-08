@@ -148,12 +148,6 @@ userUpdateValidator = (req, res, next) => {
         return;
     }
 
-    if (req.body.adresse === 'undefined' || !req.body.adresse) {
-        res.status(400).send({
-            message: "Adresse is required!"
-        });
-        return;
-    }
 
     if (req.body.password === 'undefined' || !req.body.password) {
         res.status(400).send({
